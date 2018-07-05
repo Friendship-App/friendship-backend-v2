@@ -23,3 +23,6 @@
 
 # IntelliJ
 out/
+
+# Dependency directories
+node_modules/
