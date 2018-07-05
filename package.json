@@ -1,0 +1,13 @@
+{
+  "name": "friendship_v2",
+  "version": "1.0.0",
+  "description": "Make Friendship backend clean",
+  "main": "index.js",
+  "repository": "https://github.com/chengjo0/friendship-backend.git",
+  "author": "John Cheng",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "hapi": "^17.5.2"
+  }
+}
