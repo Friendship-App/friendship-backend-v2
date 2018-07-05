@@ -12,6 +12,6 @@
     "nodemon": "^1.17.5"
   },
   "scripts": {
-    "start": ""
+    "watch": "nodemon src/server.js"
   }
 }
