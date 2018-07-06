@@ -1,29 +1,39 @@
-const Hapi = require('hapi');
-const pg = require('pg');
+const Glue = require('glue');
+const routes = require('./routes');
 
-const pool = new pg.Pool({
-  connectionString: 'postgres://postgres:password@localhost:5432/friendship_v2',
-});
+// Always use UTC timezone
+process.env.TZ = 'UTC';
 
-const server = Hapi.server({
-  port: 3000,
-  host: 'localhost'
-});
-
-const init = async () => {
-  pool.connect((err, client, done) => {
-    console.log('connected');
-    done();
-  });
-
-  await server.start();
-  console.log(`Server running at: ${server.info.uri}`);
+// Glue is a hapi.js server wrapper
+const manifest = {
+  server: {
+    // Only affects verbosity of logging to console
+    // debug: process.env.NODE_ENV === 'test' ? false : { request: ['error'] },
+    port: 3000,
+    host: '0.0.0.0',
+    debug: false
+  },
+  register: {
+    plugins: [],
+    options: {}
+  },
 };
 
-process.on('unhandledRejection', (err) => {
+const options = {
+  relativeTo: __dirname,
+};
 
-  console.log(err);
-  process.exit(1);
-});
+const startServer = async function () {
+  try {
+    const server = await Glue.compose(manifest, options);
+    await server.route(routes);
+    await server.start();
+    console.log(`Server running at: ${server.info.uri}`);
+  }
+  catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
 
-init();
+startServer();
