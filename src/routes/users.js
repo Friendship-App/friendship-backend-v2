@@ -2,17 +2,17 @@ module.exports = [
   {
     method: 'GET',
     path: '/users',
-    handler: function () {
+    handler: function() {
       console.log('hello world');
       return 'Hello World';
-    }
+    },
   },
   {
     method: 'GET',
     path: '/users/{id}',
-    handler: function () {
+    handler: function() {
       console.log('hello world 2');
       return 'Hello World 2';
-    }
-  }
+    },
+  },
 ];

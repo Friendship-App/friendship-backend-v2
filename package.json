@@ -40,6 +40,7 @@
     ]
   },
   "scripts": {
-    "watch": "nodemon src/server.js"
+    "watch": "nodemon src/server.js",
+    "prettier": "prettier --single-quote --trailing-comma all --write \"{,!(dist|node_modules)/**/}*.js\""
   }
 }

@@ -11,11 +11,11 @@ const manifest = {
     // debug: process.env.NODE_ENV === 'test' ? false : { request: ['error'] },
     port: 3000,
     host: '0.0.0.0',
-    debug: false
+    debug: false,
   },
   register: {
     plugins: [],
-    options: {}
+    options: {},
   },
 };
 
@@ -23,14 +23,16 @@ const options = {
   relativeTo: __dirname,
 };
 
-const startServer = async function () {
+const startServer = async function() {
   try {
-    const server = await Glue.compose(manifest, options);
+    const server = await Glue.compose(
+      manifest,
+      options,
+    );
     await server.route(routes);
     await server.start();
     console.log(`Server running at: ${server.info.uri}`);
-  }
-  catch (err) {
+  } catch (err) {
     console.error(err);
     process.exit(1);
   }
