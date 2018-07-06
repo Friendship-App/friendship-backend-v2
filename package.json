@@ -35,11 +35,12 @@
   },
   "lint-staged": {
     "*.{js,json,css,md}": [
-      "yarn run prettier --single-quote --trailing-comma all --write",
+      "prettier --single-quote --trailing-comma all --write",
       "git add"
     ]
   },
   "scripts": {
-    "watch": "nodemon src/server.js"
+    "watch": "nodemon src/server.js",
+    "precommit": "lint-staged"
   }
 }
