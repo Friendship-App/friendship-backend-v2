@@ -12,7 +12,6 @@ module.exports = [
     path: '/users/{id}',
     handler: function () {
       console.log('hello world 2');
-      console.log('hello world 2');
       return 'Hello World 2';
     }
   }
