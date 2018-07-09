@@ -1,3 +1,5 @@
+import { merge } from 'lodash';
+import { getEndpointDescription } from '../utils/EndpointDescriptionGenerator';
 import { getUsers } from '../handlers/users';
 
 const users = [
@@ -24,11 +26,16 @@ const users = [
     // config: merge({}, validate.pageNumberFields, getAuthWithScope('user'))
     handler: () => {},
   },
-  // Get info about a specific user by userId
   {
     method: 'GET',
     path: '/users/{userId}',
     // config: merge({}, validateUserId, getAuthWithScope('user')),
+    handler: () => {},
+  },
+  {
+    method: 'PATCH',
+    path: '/api/users/{userId}',
+    config: merge({}, getEndpointDescription('Update user profile', 'users')),
     handler: () => {},
   },
 ];

@@ -17,6 +17,8 @@ export const hapiManifest = {
       {
         plugin: 'hapi-swagger',
         options: {
+          pathPrefixSize: 2,
+          basePath: '/api',
           info: {
             title: 'Friendship API Documentation',
             version: 'v1.0',
