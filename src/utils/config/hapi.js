@@ -12,6 +12,17 @@ export const hapiManifest = {
     plugins: [
       { plugin: 'hapi-auth-jwt2' },
       { plugin: 'good', options: logOptions },
+      { plugin: 'vision' },
+      { plugin: 'inert' },
+      {
+        plugin: 'hapi-swagger',
+        options: {
+          info: {
+            title: 'Friendship API Documentation',
+            version: 'v1.0',
+          },
+        },
+      },
     ],
     options: {},
   },

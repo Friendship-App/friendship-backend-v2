@@ -31,10 +31,13 @@
     "good": "^8.1.1",
     "good-console": "^7.1.0",
     "good-squeeze": "^5.1.0",
+    "hapi-swagger": "^9.1.1",
     "husky": "^0.14.3",
+    "inert": "^5.1.0",
     "lint-staged": "^7.2.0",
     "nodemon": "^1.17.5",
     "prettier": "^1.13.7",
+    "vision": "^5.3.3",
     "white-out": "^2.0.2"
   },
   "husky": {
