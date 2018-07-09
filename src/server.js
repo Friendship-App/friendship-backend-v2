@@ -1,34 +1,37 @@
-const Glue = require('glue');
-const routes = require('./routes');
+import Glue from 'glue';
+import routes from './routes';
+import { hapiManifest, hapiOptions } from './utils/config';
 
 // Always use UTC timezone
 process.env.TZ = 'UTC';
 
-// Glue is a hapi.js server wrapper
-const manifest = {
-  server: {
-    // Only affects verbosity of logging to console
-    // debug: process.env.NODE_ENV === 'test' ? false : { request: ['error'] },
-    port: 3000,
-    host: '0.0.0.0',
-    debug: false,
-  },
-  register: {
-    plugins: [],
-    options: {},
-  },
-};
-
-const options = {
-  relativeTo: __dirname,
-};
-
 const startServer = async function() {
   try {
     const server = await Glue.compose(
-      manifest,
-      options,
+      hapiManifest,
+      hapiOptions,
     );
+    server.auth.strategy('jwt', 'jwt', {
+      key: 'really_secret_key',
+      validate: (decoded, request, callback) => {
+        const invalidToken = !decoded.id || !decoded.email || !decoded.scope;
+
+        if (invalidToken) {
+          callback(
+            new Error(
+              'JWT is missing some fields and not valid! Please log out and in again.',
+            ),
+            false,
+          );
+        } else {
+          callback(null, true);
+        }
+      },
+      verifyOptions: { algorithms: ['HS256'], expiresIn: '24h' },
+    });
+    server.events.on('route', route => {
+      console.log(`New route added: ${route.path}`);
+    });
     await server.route(routes);
     await server.start();
     console.log(`Server running at: ${server.info.uri}`);

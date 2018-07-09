@@ -28,3 +28,6 @@ out/
 
 # Dependency directories
 node_modules/
+
+# Yarn files
+yarn-error.log

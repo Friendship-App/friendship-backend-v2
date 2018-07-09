@@ -1,11 +1,6 @@
-const fs = require('fs');
+import users from './users';
+import messages from './messages';
 
-let routes = [];
+const routes = [].concat(users, messages);
 
-fs.readdirSync(__dirname)
-  .filter(file => file !== 'index.js')
-  .forEach(file => {
-    routes = routes.concat(require(`./${file}`));
-  });
-
-module.exports = routes;
+export default routes;

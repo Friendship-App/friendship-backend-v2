@@ -1,18 +1,20 @@
-module.exports = [
+import { getUsers } from '../handlers/users';
+
+const users = [
   {
     method: 'GET',
-    path: '/users',
-    handler: function() {
-      console.log('hello world');
-      return 'Hello World';
-    },
+    path: '/api/users',
+    handler: getUsers,
   },
   {
     method: 'GET',
-    path: '/users/{id}',
+    path: '/api/users/{id}',
     handler: function() {
       console.log('hello world 2');
       return 'Hello World 2';
     },
+    // prefix: '/api'
   },
 ];
+
+export default users;
