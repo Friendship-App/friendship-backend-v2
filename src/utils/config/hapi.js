@@ -1,10 +1,8 @@
-import { logOptions } from './index';
+import logOptions from './log';
 
 export const hapiManifest = {
   server: {
-    // Only affects verbosity of logging to console
-    // debug: process.env.NODE_ENV === 'test' ? false : { request: ['error'] },
-    port: 3888,
+    port: 3000,
     host: '0.0.0.0',
     debug: process.env.NODE_ENV === 'test' ? false : { request: ['error'] },
   },
@@ -26,7 +24,6 @@ export const hapiManifest = {
         },
       },
     ],
-    options: {},
   },
 };
 

@@ -1,8 +1,4 @@
 const logOptions = {
-  includes: {
-    request: ['headers', 'payload'],
-    response: ['payload'],
-  },
   reporters: {
     myConsoleReporter: [
       {
