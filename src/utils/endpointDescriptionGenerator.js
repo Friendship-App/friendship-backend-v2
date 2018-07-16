@@ -5,7 +5,7 @@ const getTags = endpointType => {
     case 'locations':
       return ['api', 'v1', 'locations'];
     case 'login':
-      return ['api', 'v1', 'register'];
+      return ['api', 'v1', 'login'];
     case 'messages':
       return ['api', 'v1', 'messages'];
     case 'personalities':

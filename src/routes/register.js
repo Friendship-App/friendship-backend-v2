@@ -1,5 +1,5 @@
 import { merge } from 'lodash';
-import { getEndpointDescription } from '../utils/EndpointDescriptionGenerator';
+import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
 import { checkInputAvailability, registerUser } from '../handlers/register';
 
 const register = [

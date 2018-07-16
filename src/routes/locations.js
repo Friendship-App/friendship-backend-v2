@@ -1,4 +1,4 @@
-import { getEndpointDescription } from '../utils/EndpointDescriptionGenerator';
+import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
 import { merge } from 'lodash';
 import { getLocations } from '../handlers/locations';
 

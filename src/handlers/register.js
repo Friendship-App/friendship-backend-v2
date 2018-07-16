@@ -39,8 +39,7 @@ export const registerUser = async (request, reply) => {
     lovedTags,
     hatedTags,
   } = request.payload;
-  const hashedPassword = hashPassword(password);
-  console.log(hashedPassword);
+  const hashedPassword = await hashPassword(password);
   const fieldsToCreateUser = {
     email,
     description,
