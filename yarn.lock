@@ -724,12 +724,6 @@ bluebird@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
-boom@3.x.x:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/boom/-/boom-3.2.2.tgz#0f0cc5d04adc5003b8c7d71f42cca7271fef0e78"
-  dependencies:
-    hoek "4.x.x"
-
 boom@7.x.x, boom@^7.1.1, boom@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/boom/-/boom-7.2.0.tgz#2bff24a55565767fde869ec808317eb10c48e966"
@@ -1622,14 +1616,6 @@ hapi-auth-jwt2@^8.1.0:
     cookie "^0.3.1"
     jsonwebtoken "^8.1.0"
 
-hapi-auth-jwt@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/hapi-auth-jwt/-/hapi-auth-jwt-4.0.0.tgz#ca1a0dda86aec97ea83b184dfdff57c13236b9ae"
-  dependencies:
-    boom "3.x.x"
-    hoek "3.x.x"
-    jsonwebtoken "5.x.x"
-
 hapi-swagger@^9.1.1:
   version "9.1.1"
   resolved "https://registry.yarnpkg.com/hapi-swagger/-/hapi-swagger-9.1.1.tgz#32e06cdaaf6974fb1445abccb0cb1912650561ac"
@@ -1713,10 +1699,6 @@ heavy@6.x.x:
     boom "7.x.x"
     hoek "5.x.x"
     joi "13.x.x"
-
-hoek@3.x.x:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/hoek/-/hoek-3.0.4.tgz#268adff66bb6695c69b4789a88b1e0847c3f3123"
 
 hoek@4.2.x, hoek@4.x.x:
   version "4.2.1"
@@ -2173,14 +2155,6 @@ json5@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-0.5.1.tgz#1eade7acc012034ad84e2396767ead9fa5495821"
 
-jsonwebtoken@5.x.x:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-5.7.0.tgz#1c90f9a86ce5b748f5f979c12b70402b4afcddb4"
-  dependencies:
-    jws "^3.0.0"
-    ms "^0.7.1"
-    xtend "^4.0.1"
-
 jsonwebtoken@^8.1.0, jsonwebtoken@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-8.3.0.tgz#056c90eee9a65ed6e6c72ddb0a1d325109aaf643"
@@ -2203,7 +2177,7 @@ jwa@^1.1.5:
     ecdsa-sig-formatter "1.0.10"
     safe-buffer "^5.0.1"
 
-jws@^3.0.0, jws@^3.1.5:
+jws@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/jws/-/jws-3.1.5.tgz#80d12d05b293d1e841e7cb8b4e69e561adcf834f"
   dependencies:
@@ -2569,10 +2543,6 @@ moment@^2.22.2:
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
-
-ms@^0.7.1:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.3.tgz#708155a5e44e33f5fd0fc53e81d0d40a91be1fff"
 
 ms@^2.1.1:
   version "2.1.1"
@@ -3867,7 +3837,7 @@ xmlbuilder@^4.1.0:
   dependencies:
     lodash "^4.0.0"
 
-xtend@^4.0.0, xtend@^4.0.1:
+xtend@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
 

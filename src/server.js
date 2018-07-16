@@ -13,18 +13,18 @@ const startServer = async function() {
     );
     server.auth.strategy('jwt', 'jwt', {
       key: 'really_secret_key',
-      validate: (decoded, request, callback) => {
+      validate: (decoded, request) => {
         const invalidToken = !decoded.id || !decoded.email || !decoded.scope;
 
         if (invalidToken) {
-          callback(
-            new Error(
+          return {
+            isValid: false,
+            response: new Error(
               'JWT is missing some fields and not valid! Please log out and in again.',
             ),
-            false,
-          );
+          };
         } else {
-          callback(null, true);
+          return { isValid: true };
         }
       },
       verifyOptions: { algorithms: ['HS256'], expiresIn: '24h' },

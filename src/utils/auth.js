@@ -70,3 +70,19 @@ export const createToken = fields => ({
     algorithm: auth.options.algorithms[0],
   }),
 });
+
+const bearerRegex = /(Bearer\s+)*(.*)/i;
+
+export const getAuthWithScope = scope => ({
+  auth: { strategy: 'jwt', scope: ['admin', scope] },
+  pre: [{ method: bindUserData, assign: 'user' }],
+});
+
+export const bindUserData = (request, reply) => {
+  const authHeader = request.headers.authorization;
+
+  const token = authHeader.match(bearerRegex)[2];
+  const decoded = jwt.decode(token);
+
+  return reply.response(decoded);
+};

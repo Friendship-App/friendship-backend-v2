@@ -1,6 +1,7 @@
 import {
   dbGetActivities,
   dbGetInterests,
+  dbGetUserTags,
   dbRegisterTags,
 } from '../models/tags';
 
@@ -9,6 +10,11 @@ export const getInterests = (request, reply) =>
 
 export const getActivities = (request, reply) =>
   dbGetActivities().then(data => reply.response(data));
+
+export const getUserTags = (request, reply) =>
+  dbGetUserTags(request.query.userId, request.pre.user.id).then(data =>
+    reply.response(data),
+  );
 
 export const registerTags = (userId, lovedTags, hatedTags) => {
   let userTags = [];

@@ -1,5 +1,6 @@
 import {
   dbGetPersonalities,
+  dbGetUserPersonalities,
   dbRegisterPersonalities,
 } from '../models/personalities';
 
@@ -13,3 +14,8 @@ export const registerPersonalities = (userId, personalities) => {
   );
   return dbRegisterPersonalities(userPersonalities);
 };
+
+export const getUserPersonalities = (request, reply) =>
+  dbGetUserPersonalities(request.query.userId).then(data =>
+    reply.response(data),
+  );
