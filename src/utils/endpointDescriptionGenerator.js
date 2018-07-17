@@ -20,6 +20,8 @@ const getTags = endpointType => {
       return ['api', 'v1', 'chatrooms'];
     case 'events':
       return ['api', 'v1', 'events'];
+    case 'aws':
+      return ['api', 'v1', 'aws'];
   }
 };
 

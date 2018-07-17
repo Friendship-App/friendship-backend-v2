@@ -28,7 +28,7 @@ export const dbGetChatrooms = async userId => {
       .where('chatroom_id', chatrooms[i].id)
       .orderBy('chat_time', 'desc')
       .then(lastMessage => {
-        chatrooms[i].lastMessage = lastMessage;
+        chatrooms[i].lastMessage = lastMessage ? lastMessage : '';
       });
 
     await knex
@@ -48,6 +48,12 @@ export const dbGetChatrooms = async userId => {
       .then(
         participantsData => (chatrooms[i].participantsData = participantsData),
       );
+  }
+
+  for (let i = chatrooms.length - 1; i > 0; i--) {
+    if (!chatrooms[i].lastMessage) {
+      chatrooms.splice(i, 1);
+    }
   }
 
   return chatrooms;
