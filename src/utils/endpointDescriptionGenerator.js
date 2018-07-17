@@ -22,6 +22,8 @@ const getTags = endpointType => {
       return ['api', 'v1', 'events'];
     case 'aws':
       return ['api', 'v1', 'aws'];
+    case 'messages':
+      return ['api', 'v1', 'messages'];
   }
 };
 

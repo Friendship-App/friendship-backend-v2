@@ -33,7 +33,7 @@ export function getUserHate(userId) {
     });
 }
 
-function getTagsDetails(tags) {
+function getTagsDetails(tags = []) {
   return knex
     .select()
     .from('tags')
@@ -41,14 +41,25 @@ function getTagsDetails(tags) {
 }
 
 export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
+  let loveInCommon, hateInCommon;
   let loveTags = await getUserLove(idOfUserAskedFor);
   let hateTags = await getUserHate(idOfUserAskedFor);
 
-  const loveInCommon = await getTagInCommon(loveTags, userId, true);
-  const hateInCommon = await getTagInCommon(hateTags, userId, false);
+  if (loveTags) {
+    loveInCommon = await getTagInCommon(loveTags, userId, true);
+    loveTags = await getTagsDetails(loveTags);
+  } else {
+    loveInCommon = 0;
+    loveTags = [];
+  }
 
-  loveTags = await getTagsDetails(loveTags);
-  hateTags = await getTagsDetails(hateTags);
+  if (hateTags) {
+    hateInCommon = await getTagInCommon(hateTags, userId, false);
+    hateTags = await getTagsDetails(hateTags);
+  } else {
+    hateInCommon = 0;
+    hateTags = [];
+  }
 
   const userTags = merge(
     {},
@@ -60,7 +71,7 @@ export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
 export const dbRegisterTags = userTags =>
   knex.insert(userTags).into('user_tag');
 
-function getTagInCommon(tags, idOfUserAskedFor, love) {
+function getTagInCommon(tags = [], idOfUserAskedFor, love) {
   return knex
     .count()
     .from('user_tag')
