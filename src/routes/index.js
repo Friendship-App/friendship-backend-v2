@@ -7,6 +7,7 @@ import tags from './tags';
 import register from './register';
 import login from './login';
 import chatrooms from './chatrooms';
+import events from './events';
 
 const routes = [].concat(
   avatars,
@@ -18,6 +19,7 @@ const routes = [].concat(
   tags,
   users,
   chatrooms,
+  events,
 );
 
 export default routes;
