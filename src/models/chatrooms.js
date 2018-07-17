@@ -1,5 +1,4 @@
 import knex from '../utils/knex';
-import { merge } from 'lodash';
 
 export const dbGetUserChatroom = userId =>
   knex
@@ -9,9 +8,13 @@ export const dbGetUserChatroom = userId =>
     .orWhere('user_receiver_id', userId);
 
 export const dbGetChatrooms = async userId => {
-  console.log(userId);
   let chatrooms = await knex
-    .select()
+    .select(
+      'id',
+      'user_creator_id as creatorId',
+      'user_receiver_id as participantId',
+      'event as isEvent',
+    )
     .from('chatrooms')
     .where('user_creator_id', userId)
     .orWhere('user_receiver_id', userId)
@@ -36,6 +39,14 @@ export const dbGetChatrooms = async userId => {
       .then(
         unreadMessagesCount =>
           (chatrooms[i].unreadMessages = unreadMessagesCount[0].count),
+      );
+
+    await knex
+      .select('id', 'avatar', 'username')
+      .from('users')
+      .whereIn('id', [chatrooms[i].creatorId, chatrooms[i].participantId])
+      .then(
+        participantsData => (chatrooms[i].participantsData = participantsData),
       );
   }
 
