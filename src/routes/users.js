@@ -1,6 +1,10 @@
 import { merge } from 'lodash';
 import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
-import { getBatchUsers, getUserInformation } from '../handlers/users';
+import {
+  getBatchUsers,
+  getUserInformation,
+  registerNotificationToken,
+} from '../handlers/users';
 import { getAuthWithScope } from '../utils/auth';
 
 const users = [
@@ -23,6 +27,16 @@ const users = [
       getEndpointDescription('Get a specific user information by id', 'users'),
     ),
     handler: getUserInformation,
+  },
+  {
+    method: 'PATCH',
+    path: '/users/push-token',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Register push notifications token', 'users'),
+    ),
+    handler: registerNotificationToken,
   },
 ];
 

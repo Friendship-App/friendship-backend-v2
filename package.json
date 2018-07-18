@@ -20,7 +20,8 @@
     "knex": "^0.15.0",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
-    "pg": "^7.4.3"
+    "pg": "^7.4.3",
+    "socket.io": "^2.1.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

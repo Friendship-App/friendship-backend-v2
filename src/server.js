@@ -11,6 +11,7 @@ const startServer = async function() {
       hapiManifest,
       hapiOptions,
     );
+    let io = require('socket.io')(server.listener);
     server.auth.strategy('jwt', 'jwt', {
       key: 'really_secret_key',
       validate: (decoded, request) => {
@@ -31,6 +32,12 @@ const startServer = async function() {
     });
     server.events.on('route', route => {
       console.log(`New route added: ${route.path}`);
+    });
+    io.on('connection', function(socket) {
+      console.log('A client just joined on', socket.id);
+      socket.on('message', message => {
+        socket.broadcast.emit('message', message);
+      });
     });
     await server.route(routes);
     await server.start();

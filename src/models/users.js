@@ -161,3 +161,10 @@ export const dbGetUserInformation = async idOfUserAskedFor => {
 
   return userDetails;
 };
+
+export const dbRegisterNotificationToken = (userId, token) => {
+  return knex('users')
+    .update({ notificationToken: token })
+    .where({ id: userId })
+    .then();
+};
