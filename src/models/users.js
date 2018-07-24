@@ -116,8 +116,8 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
 
 export const dbUserIsBanned = user => {
   return knex('banned_users')
-    .where({ user_id: user.id })
-    .countDistinct('user_id')
+    .where({ userId: user.id })
+    .countDistinct('userId')
     .then(res => res[0].count > 0);
 };
 

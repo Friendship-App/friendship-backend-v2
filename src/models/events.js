@@ -59,17 +59,19 @@ export const dbGetEvents = async userId => {
     .from(function() {
       this.select([
         ...eventFields,
-        knex.raw('count(DISTINCT participants."userId") AS participants'),
+        knex.raw(
+          'count(DISTINCT participants."participantId") AS participants',
+        ),
         knex.raw('count(DISTINCT utlove."tagId") AS loveCommon'),
         knex.raw('count(DISTINCT uthate."tagId") AS hateCommon'),
       ])
         .from('events')
         .leftJoin(
-          'eventParticipants as participants',
+          'user_event as participants',
           'participants.eventId',
           'events.id',
         )
-        .leftJoin('users', 'users.id', 'participants.userId')
+        .leftJoin('users', 'users.id', 'participants.participantId')
         .leftJoin('user_tag as utlove', 'utlove.userId', 'events.hostId')
         .leftJoin('user_tag as uthate', 'uthate.userId', 'events.hostId')
         .whereIn('events.city', userLocations)
@@ -85,17 +87,19 @@ export const dbGetEvents = async userId => {
     .union(function() {
       this.select([
         ...eventFields,
-        knex.raw('count(DISTINCT participants."userId") AS participants'),
+        knex.raw(
+          'count(DISTINCT participants."participantId") AS participants',
+        ),
         knex.raw(`0 AS loveCommon`),
         knex.raw(`0 AS hateCommon `),
       ])
         .from('events')
         .leftJoin(
-          'eventParticipants as participants',
+          'user_event as participants',
           'participants.eventId',
           'events.id',
         )
-        .leftJoin('users', 'users.id', 'participants.userId')
+        .leftJoin('users', 'users.id', 'participants.participantId')
         .leftJoin('user_tag as utlove', 'utlove.userId', 'events.hostId')
         .leftJoin('user_tag as uthate', 'uthate.userId', 'events.hostId')
         .whereIn('events.city', userLocations)
@@ -108,9 +112,9 @@ export const dbGetEvents = async userId => {
     .then(async data => {
       for (let i = 0; i < data.length; i++) {
         await knex
-          .select()
+          .select('users.id', 'users.avatar', 'users.image')
           .from('users')
-          .leftJoin('eventParticipants', 'userId', 'users.id')
+          .leftJoin('user_event', 'participantId', 'users.id')
           .where('eventId', data[i].id)
           .then(
             participantDetails =>
@@ -122,24 +126,29 @@ export const dbGetEvents = async userId => {
 };
 
 export const dbCreateEvent = eventFields => {
+  console.log(eventFields);
   return knex.transaction(async trx => {
     const report = await trx('events')
       .insert(eventFields)
       .returning('*')
       .then(results => results[0]);
 
-    await trx('eventParticipants')
+    await trx('user_event')
       .insert({
-        userId: report.hostId,
+        participantId: report.hostId,
         eventId: report.id,
-        createdAt: moment(),
       })
       .then();
 
     const chatroom = await trx('chatrooms')
-      .insert({ user_creator_id: report.hostId, event: true })
+      .insert({ creatorId: report.hostId, isEventChatroom: true })
       .returning('*')
       .then(results => results[0]);
+
+    await trx('user_chatroom')
+      .insert({ chatroomId: chatroom.id, participantId: report.hostId })
+      .returning('*')
+      .then();
 
     await trx('events')
       .update({ chatroomId: chatroom.id })
@@ -171,11 +180,11 @@ export const dbGetEventDetails = async (eventId, userId) => {
 };
 
 export const dbGetEventPersonality = async eventId => {
-  const topEventPersonalities = await knex.raw(`SELECT "name", COUNT("eventParticipants"."userId")  as "Number_of_Personalities"   FROM events
-  JOIN "eventParticipants" ON events.id = "eventParticipants"."eventId"
-  JOIN "user_personality"  ON "user_personality"."userId" =  "eventParticipants"."userId"
+  const topEventPersonalities = await knex.raw(`SELECT "name", COUNT("user_event"."participantId")  as "Number_of_Personalities"   FROM events
+  JOIN "user_event" ON events.id = "user_event"."eventId"
+  JOIN "user_personality"  ON "user_personality"."userId" =  "user_event"."participantId"
   JOIN "personalities" ON "user_personality"."personalityId" = "personalities"."id"
-  WHERE "eventParticipants"."eventId" = ${eventId}
+  WHERE "user_event"."eventId" = ${eventId}
   GROUP BY "personalities"."name"
   ORDER BY "Number_of_Personalities" DESC
   LIMIT 3`);
@@ -192,11 +201,11 @@ export const dbGetEventParticipants = async (event, userId) => {
     ON "tags"."id" = "user_tag"."tagId"
     WHERE "user_tag"."love" = ${false}
     AND "users"."id" IN (SELECT "users"."id"  FROM "users"
-          left join "eventParticipants"
-          ON "eventParticipants"."userId" = "users"."id"
+          left join "user_event"
+          ON "user_event"."participantId" = "users"."id"
           left join "events"
-          ON "events"."id" = "eventParticipants"."eventId"
-          WHERE "eventParticipants"."eventId" = ${event.id})
+          ON "events"."id" = "user_event"."eventId"
+          WHERE "user_event"."eventId" = ${event.id})
     AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
                       left join "tags" ON "tags"."id" = "user_tag"."tagId"
                       WHERE "user_tag"."userId" = ${userId}
@@ -213,11 +222,11 @@ export const dbGetEventParticipants = async (event, userId) => {
       WHERE "user_tag"."love" = ${true}
       AND "users"."id" != ${userId}
       AND "users"."id" IN (SELECT "users"."id"  FROM "users"
-            left join "eventParticipants"
-            ON "eventParticipants"."userId" = "users"."id"
+            left join "user_event"
+            ON "user_event"."participantId" = "users"."id"
             left join "events"
-            ON "events"."id" = "eventParticipants"."eventId"
-            WHERE "eventParticipants"."eventId" = ${event.id})
+            ON "events"."id" = "user_event"."eventId"
+            WHERE "user_event"."eventId" = ${event.id})
       AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
                         left join "tags" ON "tags"."id" = "user_tag"."tagId"
                         WHERE "user_tag"."userId" = ${userId}
@@ -242,21 +251,21 @@ export const dbGetEventParticipants = async (event, userId) => {
 };
 
 export const dbGetEventTopYeahsNahs = async eventId => {
-  const topEventYeahs = await knex.raw(`SELECT "tags"."name", COUNT("eventParticipants"."userId")  FROM events
-    JOIN "eventParticipants" ON events.id = "eventParticipants"."eventId"
-    JOIN "user_tag"  ON "user_tag"."userId" =  "eventParticipants"."userId"
+  const topEventYeahs = await knex.raw(`SELECT "tags"."name", COUNT("user_event"."participantId")  FROM events
+    JOIN "user_event" ON events.id = "user_event"."eventId"
+    JOIN "user_tag"  ON "user_tag"."userId" =  "user_event"."participantId"
     JOIN "tags" ON "tags"."id" = "user_tag"."tagId"
-    WHERE "eventParticipants"."eventId" = ${eventId}
+    WHERE "user_event"."eventId" = ${eventId}
     AND "user_tag".love = true
     GROUP BY "tags"."name"
     ORDER BY COUNT DESC
     LIMIT 3`);
 
-  const topEventNahs = await knex.raw(`SELECT "tags"."name", COUNT("eventParticipants"."userId")  FROM events
-    JOIN "eventParticipants" ON events.id = "eventParticipants"."eventId"
-    JOIN "user_tag"  ON "user_tag"."userId" =  "eventParticipants"."userId"
+  const topEventNahs = await knex.raw(`SELECT "tags"."name", COUNT("user_event"."participantId")  FROM events
+    JOIN "user_event" ON events.id = "user_event"."eventId"
+    JOIN "user_tag"  ON "user_tag"."userId" =  "user_event"."participantId"
     JOIN "tags" ON "tags"."id" = "user_tag"."tagId"
-    WHERE "eventParticipants"."eventId" = ${eventId}
+    WHERE "user_event"."eventId" = ${eventId}
     AND "user_tag".love = false
     GROUP BY "tags"."name"
     ORDER BY COUNT DESC

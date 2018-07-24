@@ -1,6 +1,6 @@
 import Glue from 'glue';
 import routes from './routes';
-import { hapiManifest, hapiOptions } from './utils/config';
+import { hapiManifest, hapiOptions } from './utils/config/hapi';
 
 // Always use UTC timezone
 process.env.TZ = 'UTC';

@@ -1,11 +1,7 @@
 import knex from '../utils/knex';
 import { merge } from 'lodash';
 
-export const dbGetInterests = () =>
-  knex
-    .select()
-    .from('tags')
-    .where('category', 2);
+export const dbGetTags = () => knex.select().from('tags');
 
 export const dbGetActivities = () =>
   knex

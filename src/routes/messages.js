@@ -1,7 +1,11 @@
 import { merge } from 'lodash';
 import { getAuthWithScope } from '../utils/auth';
 import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
-import { getMessages, updateMessages } from '../handlers/messages';
+import {
+  createMessage,
+  getMessages,
+  updateMessages,
+} from '../handlers/messages';
 
 const messages = [
   {
@@ -26,6 +30,16 @@ const messages = [
       ),
     ),
     handler: getMessages,
+  },
+  {
+    method: 'POST',
+    path: '/api/messages/send',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Add a new message', 'messages'),
+    ),
+    handler: createMessage,
   },
 ];
 

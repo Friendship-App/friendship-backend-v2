@@ -9,8 +9,17 @@
   "private": true,
   "dependencies": {
     "aws-sdk": "^2.269.1",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2015-node": "^6.1.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
     "bcryptjs": "^2.4.3",
     "boom": "^7.2.0",
+    "cross-env": "^5.2.0",
+    "dotenv": "^6.0.0",
     "expo-server-sdk": "^2.4.0",
     "glue": "^5.0.0",
     "hapi": "^17.5.2",
@@ -21,14 +30,12 @@
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "pg": "^7.4.3",
+    "prompt": "^1.0.0",
+    "simple-fixtures": "^1.0.1",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-es2015": "^6.24.1",
-    "cross-env": "^5.2.0",
+    "faker": "^4.1.0",
     "good": "^8.1.1",
     "good-console": "^7.1.0",
     "good-squeeze": "^5.1.0",
@@ -36,6 +43,7 @@
     "husky": "^0.14.3",
     "inert": "^5.1.0",
     "lint-staged": "^7.2.0",
+    "moment-random": "^1.0.4",
     "nodemon": "^1.17.5",
     "prettier": "^1.13.7",
     "vision": "^5.3.3",
@@ -55,6 +63,11 @@
   "scripts": {
     "watch": "cross-env NODE_ENV=development nodemon --exec babel-node src/server.js",
     "babel-node": "babel-node --presets=/*a*/ --ignore='foo|bar|baz'",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "db:migrate": "node_modules/.bin/knex --knexfile db/knexfile.js migrate:latest",
+    "db:rollback": "node_modules/.bin/knex --knexfile db/knexfile.js migrate:rollback",
+    "db:seed": "node_modules/.bin/knex --knexfile db/knexfile.js seed:run",
+    "db:wipe": "babel-node bin/wipe_db.js",
+    "db:init": "npm run db:wipe && npm run db:migrate && npm run db:seed"
   }
 }

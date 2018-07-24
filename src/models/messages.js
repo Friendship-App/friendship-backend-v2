@@ -1,15 +1,27 @@
 import knex from '../utils/knex';
 
-export const dbUpdateMessages = (chatroomId, userId) =>
+export const dbUpdateMessages = (chatroomId, receiverId) =>
   knex
     .del()
-    .from('user_unread_messages')
-    .where({ chatroomId, userId })
+    .from('unread_messages')
+    .where({ chatroomId, receiverId })
     .then();
 
 export const dbGetMessages = chatroomId =>
   knex
     .select()
     .from('messages')
-    .where({ chatroom_id: chatroomId })
-    .orderBy('chat_time', 'desc');
+    .where({ chatroomId })
+    .orderBy('chatTime', 'desc');
+
+export const dbCreateMessage = fields => {
+  return knex('messages')
+    .insert(fields)
+    .returning('*')
+    .then(data => data[0]);
+};
+
+export const dbRegisterNewUnreadMessage = fields =>
+  knex('unread_messages')
+    .insert(fields)
+    .then();

@@ -2,22 +2,21 @@ import knex from '../utils/knex';
 
 export const dbGetUserChatroom = userId =>
   knex
-    .select('id')
+    .select('chatrooms.id')
     .from('chatrooms')
-    .where('user_creator_id', userId)
-    .orWhere('user_receiver_id', userId);
+    .leftJoin('user_chatroom', 'chatroomId', 'chatrooms.id')
+    .where('participantId', userId);
 
 export const dbGetChatrooms = async userId => {
   let chatrooms = await knex
     .select(
-      'id',
-      'user_creator_id as creatorId',
-      'user_receiver_id as participantId',
-      'event as isEvent',
+      'chatrooms.id as chatroomId',
+      'chatrooms.creatorId',
+      'chatrooms.isEventChatroom',
     )
     .from('chatrooms')
-    .where('user_creator_id', userId)
-    .orWhere('user_receiver_id', userId)
+    .leftJoin('user_chatroom', 'user_chatroom.chatroomId', 'chatrooms.id')
+    .where('user_chatroom.participantId', userId)
     .then(data => data);
 
   for (let i = 0; i < chatrooms.length; i++) {
@@ -25,36 +24,46 @@ export const dbGetChatrooms = async userId => {
       .first()
       .select()
       .from('messages')
-      .where('chatroom_id', chatrooms[i].id)
-      .orderBy('chat_time', 'desc')
+      .where('chatroomId', chatrooms[i].chatroomId)
+      .orderBy('chatTime', 'desc')
       .then(lastMessage => {
         chatrooms[i].lastMessage = lastMessage ? lastMessage : '';
       });
 
     await knex
       .count()
-      .from('user_unread_messages')
-      .where('userId', userId)
-      .andWhere('chatroomId', chatrooms[i].id)
+      .from('unread_messages')
+      .where('receiverId', userId)
+      .andWhere('chatroomId', chatrooms[i].chatroomId)
       .then(
         unreadMessagesCount =>
           (chatrooms[i].unreadMessages = unreadMessagesCount[0].count),
       );
 
-    await knex
-      .select('id', 'avatar', 'username')
-      .from('users')
-      .whereIn('id', [chatrooms[i].creatorId, chatrooms[i].participantId])
-      .then(
-        participantsData => (chatrooms[i].participantsData = participantsData),
-      );
+    if (!chatrooms[i].isEventChatroom) {
+      await knex
+        .select('users.id', 'avatar', 'username', 'image')
+        .from('user_chatroom')
+        .leftJoin('users', 'user_chatroom.participantId', 'users.id')
+        .where('user_chatroom.chatroomId', chatrooms[i].chatroomId)
+        .then(
+          participantsData =>
+            (chatrooms[i].participantsData = participantsData),
+        );
+    } else {
+      await knex
+        .select('events.title', 'events.eventImage', 'events.id')
+        .from('events')
+        .where('events.chatroomId', chatrooms[i].chatroomId)
+        .then(eventData => (chatrooms[i].eventData = eventData[0]));
+    }
   }
 
-  for (let i = chatrooms.length - 1; i > 0; i--) {
+  /*for (let i = chatrooms.length - 1; i > 0; i--) {
     if (!chatrooms[i].lastMessage) {
       chatrooms.splice(i, 1);
     }
-  }
+  }*/
 
   return chatrooms;
 };
