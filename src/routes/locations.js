@@ -6,6 +6,10 @@ const locations = [
   {
     method: 'GET',
     path: '/api/locations',
+    config: merge(
+      {},
+      getEndpointDescription('Get all the locations', 'locations'),
+    ),
     handler: getLocations,
   },
 ];
