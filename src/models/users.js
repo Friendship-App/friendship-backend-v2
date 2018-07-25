@@ -168,3 +168,45 @@ export const dbRegisterNotificationToken = (userId, token) => {
     .where({ id: userId })
     .then();
 };
+
+export const dbUpdateProfile = (newUserData, userId) => {
+  const {
+    avatar,
+    username,
+    description,
+    birthyear,
+    image,
+    locations,
+    genders,
+  } = newUserData;
+  const locationsArray = [];
+  const gendersArray = [];
+  locations.map(location =>
+    locationsArray.push({ locationId: location, userId }),
+  );
+  genders.map(gender => gendersArray.push({ genderId: gender, userId }));
+
+  return knex.transaction(async trx => {
+    const user = await trx('users')
+      .update({ avatar, username, description, birthyear, image })
+      .where({ id: userId });
+    await trx('user_location')
+      .del()
+      .where({ userId })
+      .then(() =>
+        trx('user_location')
+          .insert(locationsArray)
+          .then(),
+      );
+    await trx('user_gender')
+      .del()
+      .where({ userId })
+      .then(() =>
+        trx('user_gender')
+          .insert(gendersArray)
+          .then(),
+      );
+
+    return user;
+  });
+};

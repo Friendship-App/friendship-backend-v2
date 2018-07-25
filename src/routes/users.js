@@ -4,6 +4,7 @@ import {
   getBatchUsers,
   getUserInformation,
   registerNotificationToken,
+  updateProfile,
 } from '../handlers/users';
 import { getAuthWithScope } from '../utils/auth';
 
@@ -30,13 +31,23 @@ const users = [
   },
   {
     method: 'PATCH',
-    path: '/users/push-token',
+    path: '/api/users/push-token',
     config: merge(
       {},
       getAuthWithScope('user'),
       getEndpointDescription('Register push notifications token', 'users'),
     ),
     handler: registerNotificationToken,
+  },
+  {
+    method: 'POST',
+    path: '/api/users/updateProfile',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Update a user profile', 'users'),
+    ),
+    handler: updateProfile,
   },
 ];
 

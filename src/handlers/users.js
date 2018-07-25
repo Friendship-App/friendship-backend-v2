@@ -2,6 +2,7 @@ import {
   dbGetUserInformation,
   dbGetUsersBatch,
   dbRegisterNotificationToken,
+  dbUpdateProfile,
 } from '../models/users';
 
 export const getBatchUsers = (request, reply) => {
@@ -21,4 +22,10 @@ export const registerNotificationToken = (request, reply) => {
     request.payload.userId,
     request.payload.token,
   ).then(reply);
+};
+
+export const updateProfile = (request, reply) => {
+  return dbUpdateProfile(request.payload, request.pre.user.id).then(user =>
+    reply.response(user),
+  );
 };

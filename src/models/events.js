@@ -126,7 +126,6 @@ export const dbGetEvents = async userId => {
 };
 
 export const dbCreateEvent = eventFields => {
-  console.log(eventFields);
   return knex.transaction(async trx => {
     const report = await trx('events')
       .insert(eventFields)
