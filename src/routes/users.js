@@ -4,6 +4,7 @@ import {
   getBatchUsers,
   getUserInformation,
   registerNotificationToken,
+  updateAccount,
   updateProfile,
 } from '../handlers/users';
 import { getAuthWithScope } from '../utils/auth';
@@ -48,6 +49,16 @@ const users = [
       getEndpointDescription('Update a user profile', 'users'),
     ),
     handler: updateProfile,
+  },
+  {
+    method: 'POST',
+    path: '/api/users/updateAccount',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Update a user account', 'users'),
+    ),
+    handler: updateAccount,
   },
 ];
 

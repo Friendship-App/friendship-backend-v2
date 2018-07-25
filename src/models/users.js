@@ -1,6 +1,7 @@
 import knex from '../utils/knex';
 import { merge } from 'lodash';
 import { getUserHate, getUserLove } from './tags';
+import { hashPassword } from '../handlers/register';
 
 const userListFields = [
   'users.id',
@@ -207,6 +208,21 @@ export const dbUpdateProfile = (newUserData, userId) => {
           .then(),
       );
 
+    return user;
+  });
+};
+
+export const dbUpdateAccount = (newUserAccountData, userId) => {
+  return knex.transaction(async trx => {
+    const user = await trx('users')
+      .update({ email: newUserAccountData.email })
+      .where({ id: userId });
+    if (newUserAccountData.password.length > 0) {
+      const hashedPassword = await hashPassword(newUserAccountData.password);
+      await trx('secrets')
+        .update({ password: hashedPassword })
+        .where({ ownerId: userId });
+    }
     return user;
   });
 };

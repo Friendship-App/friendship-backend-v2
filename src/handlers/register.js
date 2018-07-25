@@ -61,7 +61,7 @@ export const registerUser = async (request, reply) => {
 };
 
 // Return promise which resolves to hash of given password
-const hashPassword = password =>
+export const hashPassword = password =>
   new Promise((resolve, reject) => {
     bcrypt.genSalt(authConfig.saltRounds, (saltErr, salt) => {
       if (saltErr) {
