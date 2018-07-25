@@ -2,7 +2,7 @@
 
 import prompt from 'prompt';
 import knex from 'knex';
-import migrations from '../src/utils/config/migration';
+import config from '../src/utils/config';
 
 const schema = {
   properties: {
@@ -13,7 +13,7 @@ const schema = {
 };
 
 console.log('WARNING! This will wipe the database at:');
-console.log(migrations.development);
+console.log(config.db.development);
 console.log('Are you sure? (y/n)');
 prompt.start();
 
@@ -27,16 +27,16 @@ prompt.get(schema, async (err, result) => {
     process.exit(1);
   }
 
-  const no_db_config = JSON.parse(JSON.stringify(migrations.development)); // legit deep-clone method
+  const no_db_config = JSON.parse(JSON.stringify(config.db.development)); // legit deep-clone method
   no_db_config.connection.database = 'postgres'; // seems to be the default DB name
 
   const knex_no_db = knex(no_db_config);
-  const knex_connect_db = knex(migrations.development);
+  const knex_connect_db = knex(config.db.development);
 
   // Create the DB
   try {
     await knex_no_db.raw(
-      `CREATE DATABASE ${migrations.development.connection.database};`,
+      `CREATE DATABASE ${config.db.development.connection.database};`,
     );
   } catch (e) {
     // Ignore errors here, most likely DB existed :-)

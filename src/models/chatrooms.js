@@ -67,3 +67,22 @@ export const dbGetChatrooms = async userId => {
 
   return chatrooms;
 };
+
+export const dbCreateChatroom = async chatroomInfo => {
+  console.log(chatroomInfo.creatorId);
+  const chatroom = await knex
+    .insert({ creatorId: chatroomInfo.creatorId })
+    .into('chatrooms')
+    .returning('*')
+    .then(createdChatrooms => createdChatrooms[0]);
+
+  await knex('user_chatroom')
+    .insert([
+      { chatroomId: chatroom.id, participantId: chatroomInfo.participantId },
+      { chatroomId: chatroom.id, participantId: chatroomInfo.creatorId },
+    ])
+    .returning('*')
+    .then();
+
+  return chatroom;
+};

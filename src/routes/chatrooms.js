@@ -1,7 +1,11 @@
 import { merge } from 'lodash';
 import { getAuthWithScope } from '../utils/auth';
 import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
-import { getChatrooms, getUserChatroom } from '../handlers/chatrooms';
+import {
+  createChatroom,
+  getChatrooms,
+  getUserChatroom,
+} from '../handlers/chatrooms';
 
 const chatrooms = [
   {
@@ -29,6 +33,16 @@ const chatrooms = [
       ),
     ),
     handler: getChatrooms,
+  },
+  {
+    method: 'POST',
+    path: '/api/chatrooms/create',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Create a new chatroom', 'chatrooms'),
+    ),
+    handler: createChatroom,
   },
 ];
 

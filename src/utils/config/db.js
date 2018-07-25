@@ -16,9 +16,6 @@ const dbConnectionConfig = {
     tableName: 'knex_migrations',
     directory: 'migrations',
   },
-  seeds: {
-    directory: 'seeds-dev',
-  },
 };
 
 export default dbConnectionConfig;

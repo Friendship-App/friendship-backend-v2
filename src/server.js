@@ -1,6 +1,7 @@
 import Glue from 'glue';
 import routes from './routes';
 import { hapiManifest, hapiOptions } from './utils/config/hapi';
+import SocketIO from 'socket.io';
 
 // Always use UTC timezone
 process.env.TZ = 'UTC';
@@ -11,7 +12,7 @@ const startServer = async function() {
       hapiManifest,
       hapiOptions,
     );
-    let io = require('socket.io')(server.listener);
+
     server.auth.strategy('jwt', 'jwt', {
       key: 'really_secret_key',
       validate: (decoded, request) => {
@@ -30,15 +31,27 @@ const startServer = async function() {
       },
       verifyOptions: { algorithms: ['HS256'], expiresIn: '24h' },
     });
+
     server.events.on('route', route => {
       console.log(`New route added: ${route.path}`);
     });
-    io.on('connection', function(socket) {
+
+    const io = SocketIO.listen(server.listener);
+    io.on('connect', function(socket) {
       console.log('A client just joined on', socket.id);
       socket.on('message', message => {
+        console.log('= = = = = = = = = = = = = = == = = ');
+        console.log('sending...');
+        console.log(message);
+        console.log('= = = = = = = = = = = = = = == = = ');
+        // socket.emit('message', message);
         socket.broadcast.emit('message', message);
       });
     });
+    // io.sockets.on('message', function(socket) {
+    //   console.log(socket);
+    // });
+
     await server.route(routes);
     await server.start();
     console.log(`Server running at: ${server.info.uri}`);
