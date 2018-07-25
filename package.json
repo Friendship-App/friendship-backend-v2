@@ -61,7 +61,9 @@
     ]
   },
   "scripts": {
+    "start": "npm run build && node dist/server.js",
     "watch": "cross-env NODE_ENV=development nodemon --exec babel-node src/server.js",
+    "build": "mkdir -p dist && babel src --out-dir dist --source-maps",
     "babel-node": "babel-node --presets=/*a*/ --ignore='foo|bar|baz'",
     "precommit": "lint-staged",
     "db:migrate": "node_modules/.bin/knex --knexfile db/knexfile.js migrate:latest",

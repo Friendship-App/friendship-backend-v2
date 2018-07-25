@@ -1,17 +1,12 @@
-const simpleFixtures = require('simple-fixtures');
-const faker = require('faker/locale/en');
 const moment = require('moment');
 
-const activities = [
+const tagsLabel = [
   'Eating well',
   'Doing fitness stuff',
   'Netflix & chill',
   'Coffee & discussing',
   'Backpacking',
   'Playing video games',
-];
-
-const interests = [
   'Rap-music',
   'Incorrect jokes/Memes',
   'Art galleries',
@@ -20,27 +15,14 @@ const interests = [
   'Vegetarian food',
 ];
 
-const activitiesTags = [];
+const tags = [];
 
-activities.map(activity => {
-  activitiesTags.push({
+tagsLabel.map(activity => {
+  tags.push({
+    creatorId: 1,
     name: activity,
-    category: 1,
     createdAt: moment(),
   });
 });
 
-const interestsTags = [];
-
-interests.map(interest => {
-  interestsTags.push({
-    name: interest,
-    category: 2,
-    createdAt: moment(),
-  });
-});
-
-exports.seed = knex =>
-  knex
-    .batchInsert('tags', activitiesTags)
-    .then(() => knex.batchInsert('tags', interestsTags));
+exports.seed = knex => knex.batchInsert('tags', tags).then();

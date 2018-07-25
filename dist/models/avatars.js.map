@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/models/avatars.js"],"names":["dbGetAvatars","knex","select","from"],"mappings":";;;;;;;AAAA;;;;;;AAEO,MAAMA,sCAAe,MAAMC,eAAKC,MAAL,GAAcC,IAAd,CAAmB,SAAnB,CAA3B","file":"avatars.js","sourcesContent":["import knex from '../utils/knex';\n\nexport const dbGetAvatars = () => knex.select().from('avatars');\n"]}
