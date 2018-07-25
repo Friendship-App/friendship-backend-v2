@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict';
 
 var _glue = require('glue');
@@ -86,17 +87,9 @@ const startServer = (() => {
       io.on('connect', function(socket) {
         console.log('A client just joined on', socket.id);
         socket.on('message', message => {
-          console.log('= = = = = = = = = = = = = = == = = ');
-          console.log('sending...');
-          console.log(message);
-          console.log('= = = = = = = = = = = = = = == = = ');
-          // socket.emit('message', message);
           socket.broadcast.emit('message', message);
         });
       });
-      // io.sockets.on('message', function(socket) {
-      //   console.log(socket);
-      // });
 
       yield server.route(_routes2.default);
       yield server.start();
