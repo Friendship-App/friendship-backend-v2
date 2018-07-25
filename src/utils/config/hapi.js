@@ -2,8 +2,8 @@ import logOptions from './log';
 
 export const hapiManifest = {
   server: {
-    port: 3000,
-    host: '0.0.0.0',
+    port: env.PORT || 3000,
+    host: env.HOST || '0.0.0.0',
     debug: process.env.NODE_ENV === 'test' ? false : { request: ['error'] },
   },
   register: {
