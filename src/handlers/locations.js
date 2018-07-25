@@ -1,7 +1,7 @@
 import { dbGetLocations, dbRegisterLocations } from '../models/locations';
 
 export const getLocations = (request, reply) =>
-  dbGetLocations().then(data => reply.response(data));
+  dbGetLocations().then(data => reply.response(data[0]));
 
 export const registerLocations = (userId, locations) => {
   const userLocations = [];
