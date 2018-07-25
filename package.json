@@ -32,13 +32,13 @@
     "pg": "^7.4.3",
     "prompt": "^1.0.0",
     "simple-fixtures": "^1.0.1",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.1.1",
+    "good": "^8.1.1",
+    "good-console": "^7.1.0",
+    "good-squeeze": "^5.1.0"
   },
   "devDependencies": {
     "faker": "^4.1.0",
-    "good": "^8.1.1",
-    "good-console": "^7.1.0",
-    "good-squeeze": "^5.1.0",
     "hapi-swagger": "^9.1.1",
     "husky": "^0.14.3",
     "inert": "^5.1.0",
