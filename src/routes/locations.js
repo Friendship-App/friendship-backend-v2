@@ -10,7 +10,10 @@ const locations = [
       {},
       getEndpointDescription('Get all the locations', 'locations'),
     ),
-    handler: getLocations,
+    handler: (request, reply) => {
+      console.log('I am in ...');
+      getLocations(request, reply);
+    },
   },
 ];
 
