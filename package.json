@@ -66,6 +66,7 @@
     "build": "mkdir -p dist && babel src --out-dir dist --source-maps",
     "babel-node": "babel-node --presets=/*a*/ --ignore='foo|bar|baz'",
     "precommit": "lint-staged",
+    "register:admin": "babel-node bin/register_admin.js",
     "db:migrate": "node_modules/.bin/knex --knexfile db/knexfile.js migrate:latest",
     "db:rollback": "node_modules/.bin/knex --knexfile db/knexfile.js migrate:rollback",
     "db:seed": "node_modules/.bin/knex --knexfile db/knexfile.js seed:run",

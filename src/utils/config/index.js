@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import dbConnectionConfig from './db';
+import auth from './auth';
 
 const env = process.env;
 
@@ -26,6 +27,7 @@ if (
 
 const config = {
   db: { ...dbConnectionConfig },
+  auth: { ...auth },
 };
 
 export default {
