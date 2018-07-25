@@ -7,6 +7,7 @@ const dbConnectionConfig = {
     password: '',
     database: 'friendship',
     ssl: false,
+    cors: true,
   },
   pool: {
     min: 1,
