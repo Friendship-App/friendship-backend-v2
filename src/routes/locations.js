@@ -6,14 +6,7 @@ const locations = [
   {
     method: 'GET',
     path: '/api/locations',
-    config: merge(
-      {},
-      getEndpointDescription('Get all the locations', 'locations'),
-    ),
-    handler: (request, reply) => {
-      console.log('I am in ...');
-      getLocations(request, reply);
-    },
+    handler: getLocations,
   },
 ];
 
