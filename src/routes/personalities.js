@@ -11,7 +11,7 @@ const personalities = [
     method: 'GET',
     path: '/api/personalities',
     config: merge(
-      {},
+      { cors: true },
       getEndpointDescription('Get all the personalities', 'personalities'),
     ),
     handler: getPersonalities,
