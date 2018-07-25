@@ -44,6 +44,7 @@ prompt.get(schema, (err, result) => {
           const user = await trx('users')
             .insert({
               email: result.email,
+              username: result.email,
               scope: 'admin',
               active: true,
             })

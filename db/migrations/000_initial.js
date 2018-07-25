@@ -32,10 +32,7 @@ exports.up = knex =>
         );
       table.text('compatibility');
       table.boolean('enableMatching').defaultTo(false);
-      table
-        .integer('birthyear')
-        .unsigned()
-        .notNullable();
+      table.integer('birthyear').unsigned();
       table.string('notificationToken');
       table.text('status');
     })
