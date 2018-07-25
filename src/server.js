@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import Glue from 'glue';
 import routes from './routes';
 import { hapiManifest, hapiOptions } from './utils/config/hapi';
@@ -40,17 +42,9 @@ const startServer = async function() {
     io.on('connect', function(socket) {
       console.log('A client just joined on', socket.id);
       socket.on('message', message => {
-        console.log('= = = = = = = = = = = = = = == = = ');
-        console.log('sending...');
-        console.log(message);
-        console.log('= = = = = = = = = = = = = = == = = ');
-        // socket.emit('message', message);
         socket.broadcast.emit('message', message);
       });
     });
-    // io.sockets.on('message', function(socket) {
-    //   console.log(socket);
-    // });
 
     await server.route(routes);
     await server.start();
