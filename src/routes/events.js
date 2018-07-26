@@ -1,12 +1,7 @@
 import { merge } from 'lodash';
 import { getAuthWithScope } from '../utils/auth';
 import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
-import {
-  createEvent,
-  getEventDetails,
-  getEventParticipants,
-  getEvents,
-} from '../handlers/events';
+import { createEvent, getEventDetails, getEvents } from '../handlers/events';
 
 const events = [
   {
