@@ -11,7 +11,7 @@ import { getAuthWithScope } from '../utils/auth';
 
 const users = [
   {
-    method: 'GET',
+    method: 'POST',
     path: '/api/users/{batchSize}',
     config: merge(
       {},

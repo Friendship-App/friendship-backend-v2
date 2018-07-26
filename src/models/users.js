@@ -29,17 +29,31 @@ function getUserLocations(userId) {
     });
 }
 
-export const dbGetUsersBatch = async (pageNumber, userId) => {
+export const dbGetUsersBatch = async (
+  pageNumber,
+  userId,
+  usersAlreadyFetched = [],
+) => {
   const pageLimit = 10;
-  const offset = pageNumber * pageLimit;
 
   const loveTags = await getUserLove(userId);
   const hateTags = await getUserHate(userId);
-
   const userLocations = await getUserLocations(userId);
 
-  const usersAlreadyFetched = await knex('users')
-    .select(knex.raw('array_agg(DISTINCT users.id) as arr'))
+  const usersAlreadyFetchedId = [userId];
+  usersAlreadyFetched.map(user => {
+    usersAlreadyFetchedId.push(user.id);
+  });
+
+  let usersWithCommonTags = await knex('users')
+    .select([
+      ...userListFields,
+      knex.raw('array_agg(DISTINCT "gender") AS genders'),
+      knex.raw('array_agg(DISTINCT locations.name) AS locations'),
+      knex.raw('count(DISTINCT utlove."tagId") AS loveCommon'),
+      knex.raw('count(DISTINCT uthate."tagId") AS hateCommon'),
+    ])
+    .from('users')
     .leftJoin('user_gender', 'user_gender.userId', 'users.id')
     .leftJoin('genders', 'genders.id', 'user_gender.genderId')
     .leftJoin('user_location', 'user_location.userId', 'users.id')
@@ -47,7 +61,7 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
     .leftJoin('user_tag as utlove', 'utlove.userId', 'users.id')
     .leftJoin('user_tag as uthate', 'uthate.userId', 'users.id')
     .whereIn('user_location.locationId', userLocations)
-    .andWhereNot('users.id', userId)
+    .whereNotIn('users.id', usersAlreadyFetchedId)
     .andWhere('users.scope', 'user')
     .andWhere(
       knex.raw(`utlove."tagId" IN (${loveTags}) AND utlove."love" = true`),
@@ -55,64 +69,40 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
     .andWhere(
       knex.raw(`uthate."tagId" IN (${hateTags}) AND uthate."love" = false`),
     )
-    .limit(offset)
-    .then(res => {
-      return res.length > 0 ? res[0].arr : [];
-    });
+    .groupBy('users.id')
+    .orderByRaw('loveCommon DESC, hateCommon DESC');
 
-  return knex
-    .from(function() {
-      this.select([
-        ...userListFields,
-        knex.raw('array_agg(DISTINCT "gender") AS genders'),
-        knex.raw('array_agg(DISTINCT locations.name) AS locations'),
-        knex.raw('count(DISTINCT utlove."tagId") AS loveCommon'),
-        knex.raw('count(DISTINCT uthate."tagId") AS hateCommon'),
-      ])
-        .from('users')
-        .leftJoin('user_gender', 'user_gender.userId', 'users.id')
-        .leftJoin('genders', 'genders.id', 'user_gender.genderId')
-        .leftJoin('user_location', 'user_location.userId', 'users.id')
-        .leftJoin('locations', 'locations.id', 'user_location.locationId')
-        .leftJoin('user_tag as utlove', 'utlove.userId', 'users.id')
-        .leftJoin('user_tag as uthate', 'uthate.userId', 'users.id')
-        .whereIn('user_location.locationId', userLocations)
-        .andWhereNot('users.id', userId)
-        .andWhere('users.scope', 'user')
-        .andWhere(
-          knex.raw(`utlove."tagId" IN (${loveTags}) AND utlove."love" = true`),
-        )
-        .andWhere(
-          knex.raw(`uthate."tagId" IN (${hateTags}) AND uthate."love" = false`),
-        )
-        .as('test')
-        .groupBy('users.id');
-    }, true)
-    .union(function() {
-      this.select([
+  usersWithCommonTags = usersWithCommonTags.slice(pageNumber, pageLimit);
+
+  if (usersWithCommonTags.length < pageLimit) {
+    usersWithCommonTags.map(user => usersAlreadyFetchedId.push(user.id));
+    let usersWithNoCommonTags = await knex
+      .select([
         ...userListFields,
         knex.raw('array_agg(DISTINCT "gender") AS genders'),
         knex.raw('array_agg(DISTINCT locations.name) AS locations'),
         knex.raw(`0 AS loveCommon`),
         knex.raw(`0 AS hateCommon `),
       ])
-        .from('users')
-        .leftJoin('user_gender', 'user_gender.userId', 'users.id')
-        .leftJoin('genders', 'genders.id', 'user_gender.genderId')
-        .leftJoin('user_location', 'user_location.userId', 'users.id')
-        .leftJoin('locations', 'locations.id', 'user_location.locationId')
-        .leftJoin('user_tag as utlove', 'utlove.userId', 'users.id')
-        .leftJoin('user_tag as uthate', 'uthate.userId', 'users.id')
-        .whereIn('user_location.locationId', userLocations)
-        .whereNotIn('users.id', usersAlreadyFetched)
-        .andWhereNot('users.id', userId)
-        .andWhere('users.scope', 'user')
-        .groupBy('users.id');
-    }, true)
-    .as('test_2')
-    .limit(pageLimit)
-    .offset(offset)
-    .orderByRaw('loveCommon DESC, hateCommon DESC');
+      .from('users')
+      .leftJoin('user_gender', 'user_gender.userId', 'users.id')
+      .leftJoin('genders', 'genders.id', 'user_gender.genderId')
+      .leftJoin('user_location', 'user_location.userId', 'users.id')
+      .leftJoin('locations', 'locations.id', 'user_location.locationId')
+      .leftJoin('user_tag as utlove', 'utlove.userId', 'users.id')
+      .leftJoin('user_tag as uthate', 'uthate.userId', 'users.id')
+      .whereIn('user_location.locationId', userLocations)
+      .whereNotIn('users.id', usersAlreadyFetchedId)
+      .andWhereNot('users.id', userId)
+      .andWhere('users.scope', 'user')
+      .groupBy('users.id');
+
+    const limit = pageLimit - usersWithCommonTags.length;
+    usersWithNoCommonTags = usersWithNoCommonTags.slice(0, limit);
+    usersWithCommonTags = usersWithCommonTags.concat(usersWithNoCommonTags);
+  }
+
+  return usersWithCommonTags;
 };
 
 export const dbUserIsBanned = user => {
