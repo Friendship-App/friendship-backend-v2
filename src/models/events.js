@@ -112,7 +112,7 @@ export const dbGetEvents = async userId => {
     .then(async data => {
       for (let i = 0; i < data.length; i++) {
         await knex
-          .select('users.id', 'users.avatar', 'users.image')
+          .select('users.id', 'users.mood', 'users.image')
           .from('users')
           .leftJoin('user_event', 'participantId', 'users.id')
           .where('eventId', data[i].id)
@@ -191,7 +191,7 @@ export const dbGetEventPersonality = async eventId => {
 };
 
 export const dbGetEventParticipants = async (event, userId) => {
-  const hateCommonLoveCommon = await knex.raw(`SELECT "users"."id","users"."avatar","users"."username",
+  const hateCommonLoveCommon = await knex.raw(`SELECT "users"."id","users"."mood","users"."username",
     count(DISTINCT "tags"."name") AS "hateCommon"
     FROM "users"
     left join "user_tag"

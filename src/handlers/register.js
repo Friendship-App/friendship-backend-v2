@@ -32,7 +32,7 @@ export const registerUser = async (request, reply) => {
     username,
     image,
     birthyear,
-    avatar,
+    mood,
     genders,
     locations,
     personalities,
@@ -45,7 +45,7 @@ export const registerUser = async (request, reply) => {
     description,
     username,
     birthyear,
-    avatar,
+    mood,
     image,
     scope,
   };

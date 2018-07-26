@@ -1,7 +1,7 @@
 const getTags = endpointType => {
   switch (endpointType) {
-    case 'avatars':
-      return ['api', 'v1', 'avatars'];
+    case 'moods':
+      return ['api', 'v1', 'moods'];
     case 'locations':
       return ['api', 'v1', 'locations'];
     case 'login':
@@ -22,8 +22,6 @@ const getTags = endpointType => {
       return ['api', 'v1', 'events'];
     case 'aws':
       return ['api', 'v1', 'aws'];
-    case 'messages':
-      return ['api', 'v1', 'messages'];
   }
 };
 

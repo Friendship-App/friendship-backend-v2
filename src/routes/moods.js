@@ -1,13 +1,13 @@
 import { merge } from 'lodash';
 import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
-import { getAvatars } from '../handlers/avatars';
+import { getMoods } from '../handlers/moods';
 
 const avatars = [
   {
     method: 'GET',
-    path: '/api/avatars',
-    config: merge({}, getEndpointDescription('Get all the avatars', 'avatars')),
-    handler: getAvatars,
+    path: '/api/moods',
+    config: merge({}, getEndpointDescription('Get all the moods', 'moods')),
+    handler: getMoods,
   },
 ];
 

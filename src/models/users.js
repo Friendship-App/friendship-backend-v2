@@ -11,7 +11,7 @@ const userListFields = [
   'users.scope',
   'users.username',
   'users.description',
-  'users.avatar',
+  'users.mood',
   'users.compatibility',
   'users.active',
   'users.birthyear',
@@ -162,7 +162,7 @@ export const dbRegisterNotificationToken = (userId, token) => {
 
 export const dbUpdateProfile = (newUserData, userId) => {
   const {
-    avatar,
+    mood,
     username,
     description,
     birthyear,
@@ -179,7 +179,7 @@ export const dbUpdateProfile = (newUserData, userId) => {
 
   return knex.transaction(async trx => {
     const user = await trx('users')
-      .update({ avatar, username, description, birthyear, image })
+      .update({ mood, username, description, birthyear, image })
       .where({ id: userId });
     await trx('user_location')
       .del()
