@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/utils/knex.js"],"names":["dbConnectionConfig"],"mappings":";;;;;;AAAA;;;;AACA;;;;;;kBAEe,oBAAKA,YAAL,C","file":"knex.js","sourcesContent":["import knex from 'knex';\nimport dbConnectionConfig from './config/db';\n\nexport default knex(dbConnectionConfig);\n"]}
