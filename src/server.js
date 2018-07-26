@@ -16,7 +16,7 @@ const startServer = async function() {
     );
 
     server.auth.strategy('jwt', 'jwt', {
-      key: 'really_secret_key',
+      key: process.env.SECRET || 'really_secret_key',
       validate: (decoded, request) => {
         const invalidToken = !decoded.id || !decoded.email || !decoded.scope;
 
