@@ -61,6 +61,7 @@ export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
     {},
     { loveTags, hateTags, loveInCommon, hateInCommon },
   );
+
   return userTags;
 };
 
