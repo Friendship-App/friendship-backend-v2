@@ -7,11 +7,9 @@ import {
 } from '../models/users';
 
 export const getBatchUsers = (request, reply) => {
-  return dbGetUsersBatch(
-    request.params.batchSize,
-    request.pre.user.id,
-    request.payload.usersAlreadyFetched,
-  ).then(data => reply.response(data));
+  return dbGetUsersBatch(request.params.batchSize, request.pre.user.id).then(
+    data => reply.response(data),
+  );
 };
 
 export const getUserInformation = (request, reply) => {

@@ -29,21 +29,14 @@ function getUserLocations(userId) {
     });
 }
 
-export const dbGetUsersBatch = async (
-  pageNumber,
-  userId,
-  usersAlreadyFetched = [],
-) => {
-  const pageLimit = 10;
+export const dbGetUsersBatch = async (pageNumber, userId) => {
+  const pageLimit = 10 * (pageNumber + 1);
 
   const loveTags = await getUserLove(userId);
   const hateTags = await getUserHate(userId);
   const userLocations = await getUserLocations(userId);
 
   const usersAlreadyFetchedId = [userId];
-  usersAlreadyFetched.map(user => {
-    usersAlreadyFetchedId.push(user.id);
-  });
 
   let usersWithCommonTags = await knex('users')
     .select([
@@ -72,7 +65,7 @@ export const dbGetUsersBatch = async (
     .groupBy('users.id')
     .orderByRaw('loveCommon DESC, hateCommon DESC');
 
-  usersWithCommonTags = usersWithCommonTags.slice(pageNumber, pageLimit);
+  usersWithCommonTags = usersWithCommonTags.slice(0, pageLimit);
 
   if (usersWithCommonTags.length < pageLimit) {
     usersWithCommonTags.map(user => usersAlreadyFetchedId.push(user.id));
