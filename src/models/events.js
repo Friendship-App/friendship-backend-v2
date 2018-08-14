@@ -103,7 +103,7 @@ export const dbGetEvents = async userId => {
         .leftJoin('user_tag as utlove', 'utlove.userId', 'events.hostId')
         .leftJoin('user_tag as uthate', 'uthate.userId', 'events.hostId')
         .whereIn('events.city', userLocations)
-        .orWhere('events.hostId', userId)
+        // .orWhere('events.hostId', userId)
         .whereNotIn('events.id', eventsWithLoveAndHateInCommon)
         .groupBy('events.id');
     }, true)
@@ -112,7 +112,7 @@ export const dbGetEvents = async userId => {
     .then(async data => {
       for (let i = 0; i < data.length; i++) {
         await knex
-          .select('users.id', 'users.mood', 'users.image')
+          .select('users.id', 'users.mood', 'users.image', 'users.username')
           .from('users')
           .leftJoin('user_event', 'participantId', 'users.id')
           .where('eventId', data[i].id)
@@ -282,3 +282,15 @@ export const dbGetEventTopYeahsNahs = async eventId => {
 
   return topYeahsNahs;
 };
+
+export const dbJoinEvent = (eventId, userId) =>
+  knex
+    .insert({ participantId: userId, eventId })
+    .into('user_event')
+    .returning('*');
+
+export const dbLeaveEvent = (eventId, userId) =>
+  knex
+    .del()
+    .from('user_event')
+    .where({ participantId: userId, eventId });

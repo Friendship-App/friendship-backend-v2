@@ -1,7 +1,13 @@
 import { merge } from 'lodash';
 import { getAuthWithScope } from '../utils/auth';
 import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
-import { createEvent, getEventDetails, getEvents } from '../handlers/events';
+import {
+  createEvent,
+  getEventDetails,
+  getEvents,
+  joinEvent,
+  leaveEvent,
+} from '../handlers/events';
 
 const events = [
   {
@@ -33,6 +39,26 @@ const events = [
       getEndpointDescription('Get details on a specific event', 'events'),
     ),
     handler: getEventDetails,
+  },
+  {
+    method: 'POST',
+    path: '/api/events/join/{eventId}',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Join a specific event', 'events'),
+    ),
+    handler: joinEvent,
+  },
+  {
+    method: 'POST',
+    path: '/api/events/leave/{eventId}',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Leave a specific event', 'events'),
+    ),
+    handler: leaveEvent,
   },
 ];
 
