@@ -191,7 +191,7 @@ export const dbGetEventPersonality = async eventId => {
 };
 
 export const dbGetEventParticipants = async (event, userId) => {
-  const hateCommonLoveCommon = await knex.raw(`SELECT "users"."id","users"."mood","users"."username",
+  const hateCommonLoveCommon = await knex.raw(`SELECT "users"."id","users"."mood","users"."username","users"."image",
     count(DISTINCT "tags"."name") AS "hateCommon"
     FROM "users"
     left join "user_tag"
@@ -211,7 +211,7 @@ export const dbGetEventParticipants = async (event, userId) => {
                       AND "user_tag"."love" = ${false})
     GROUP BY "users"."id"`);
 
-  const loveCommon = await knex.raw(`SELECT "users"."id","users"."username",
+  const loveCommon = await knex.raw(`SELECT "users"."id","users"."username","users"."image",
       count(DISTINCT "tags"."name") AS "loveCommon"
       FROM "users"
       left join "user_tag"
@@ -246,6 +246,7 @@ export const dbGetEventParticipants = async (event, userId) => {
       hateCommonLoveCommon.rows.unshift(hostUser);
     }
   });
+
   return hateCommonLoveCommon.rows;
 };
 
