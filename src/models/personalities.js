@@ -14,8 +14,6 @@ export const dbGetUserPersonalities = userId =>
 
 export const dbUpdateUserPersonalities = (personalities, userId) =>
   knex.transaction(async trx => {
-    console.log(personalities);
-    console.log(userId);
     await trx
       .del()
       .from('user_personality')
