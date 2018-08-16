@@ -11,3 +11,26 @@ export const dbGetUserPersonalities = userId =>
     .from('user_personality')
     .leftJoin('personalities', 'id', 'personalityId')
     .where({ userId });
+
+export const dbUpdateUserPersonalities = (personalities, userId) =>
+  knex.transaction(async trx => {
+    console.log(personalities);
+    console.log(userId);
+    await trx
+      .del()
+      .from('user_personality')
+      .where({ userId });
+
+    const updatedPersonalities = [];
+    personalities.map(personality =>
+      updatedPersonalities.push({
+        userId,
+        personalityId: personality,
+        level: 5,
+      }),
+    );
+    return trx
+      .insert(updatedPersonalities)
+      .into('user_personality')
+      .returning('*');
+  });

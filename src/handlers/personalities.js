@@ -2,6 +2,7 @@ import {
   dbGetPersonalities,
   dbGetUserPersonalities,
   dbRegisterPersonalities,
+  dbUpdateUserPersonalities,
 } from '../models/personalities';
 
 export const getPersonalities = (request, reply) =>
@@ -19,3 +20,9 @@ export const getUserPersonalities = (request, reply) =>
   dbGetUserPersonalities(request.query.userId).then(data =>
     reply.response(data),
   );
+
+export const updateUserPersonalities = (request, reply) =>
+  dbUpdateUserPersonalities(
+    request.payload.personalities,
+    request.pre.user.id,
+  ).then(data => reply.response(data));

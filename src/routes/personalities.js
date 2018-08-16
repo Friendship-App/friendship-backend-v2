@@ -3,6 +3,7 @@ import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
 import {
   getPersonalities,
   getUserPersonalities,
+  updateUserPersonalities,
 } from '../handlers/personalities';
 import { getAuthWithScope } from '../utils/auth';
 
@@ -28,6 +29,19 @@ const personalities = [
       ),
     ),
     handler: getUserPersonalities,
+  },
+  {
+    method: 'POST',
+    path: '/api/userPersonalities/update',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription(
+        'Update the personalities for a specific user',
+        'personalities',
+      ),
+    ),
+    handler: updateUserPersonalities,
   },
 ];
 
