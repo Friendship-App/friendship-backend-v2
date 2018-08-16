@@ -77,3 +77,22 @@ function getTagInCommon(tags = [], idOfUserAskedFor, love) {
     .andWhere('love', love)
     .then(data => data[0].count);
 }
+
+export const dbUpdateUserTags = (lovedTags, hatedTags, userId) =>
+  knex.transaction(async trx => {
+    console.log(lovedTags);
+    console.log(hatedTags);
+    await trx
+      .del()
+      .from('user_tag')
+      .where({ userId });
+
+    const updatedTags = [];
+    lovedTags.map(tag => updatedTags.push({ userId, tagId: tag, love: true }));
+    hatedTags.map(tag => updatedTags.push({ userId, tagId: tag, love: false }));
+
+    return trx
+      .insert(updatedTags)
+      .into('user_tag')
+      .returning('*');
+  });

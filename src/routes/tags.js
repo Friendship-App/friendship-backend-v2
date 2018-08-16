@@ -1,6 +1,6 @@
 import { merge } from 'lodash';
 import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
-import { getTags, getUserTags } from '../handlers/tags';
+import { getTags, getUserTags, updateUserTags } from '../handlers/tags';
 import { getAuthWithScope } from '../utils/auth';
 
 const tags = [
@@ -19,6 +19,19 @@ const tags = [
       getEndpointDescription('Get the tags for a specific user by id', 'tags'),
     ),
     handler: getUserTags,
+  },
+  {
+    method: 'POST',
+    path: '/api/userTags/update',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription(
+        'Update the tags for a specific user by id',
+        'tags',
+      ),
+    ),
+    handler: updateUserTags,
   },
 ];
 

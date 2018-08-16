@@ -1,4 +1,9 @@
-import { dbGetTags, dbGetUserTags, dbRegisterTags } from '../models/tags';
+import {
+  dbGetTags,
+  dbGetUserTags,
+  dbRegisterTags,
+  dbUpdateUserTags,
+} from '../models/tags';
 
 export const getTags = (request, reply) =>
   dbGetTags().then(data => reply.response(data));
@@ -21,3 +26,10 @@ function formatTags(userId, tags, userTags, love) {
   tags.map(tag => tmpUserTags.push({ userId, tagId: tag, love }));
   return tmpUserTags;
 }
+
+export const updateUserTags = (request, reply) =>
+  dbUpdateUserTags(
+    request.payload.lovedTags,
+    request.payload.hatedTags,
+    request.pre.user.id,
+  ).then(data => reply.response(data));
