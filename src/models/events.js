@@ -295,3 +295,12 @@ export const dbLeaveEvent = (eventId, userId) =>
     .del()
     .from('user_event')
     .where({ participantId: userId, eventId });
+
+export const dbUpdateEvent = (eventData, eventId) =>
+  knex.transaction(async trx => {
+    console.log(eventData);
+    console.log(eventId);
+    return trx('events')
+      .update(eventData)
+      .where({ id: eventId });
+  });

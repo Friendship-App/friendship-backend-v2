@@ -7,6 +7,7 @@ import {
   getEvents,
   joinEvent,
   leaveEvent,
+  updateEvent,
 } from '../handlers/events';
 
 const events = [
@@ -59,6 +60,16 @@ const events = [
       getEndpointDescription('Leave a specific event', 'events'),
     ),
     handler: leaveEvent,
+  },
+  {
+    method: 'POST',
+    path: '/api/events/update',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Update a specific event', 'events'),
+    ),
+    handler: updateEvent,
   },
 ];
 

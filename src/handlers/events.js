@@ -4,6 +4,7 @@ import {
   dbGetEvents,
   dbJoinEvent,
   dbLeaveEvent,
+  dbUpdateEvent,
 } from '../models/events';
 import moment from 'moment';
 
@@ -37,4 +38,9 @@ export const joinEvent = (request, reply) =>
 export const leaveEvent = (request, reply) =>
   dbLeaveEvent(request.params.eventId, request.pre.user.id).then(data =>
     reply.response(data),
+  );
+
+export const updateEvent = (request, reply) =>
+  dbUpdateEvent(request.payload.eventData, request.payload.eventId).then(
+    event => reply.response(event),
   );
