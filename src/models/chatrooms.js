@@ -1,11 +1,19 @@
 import knex from '../utils/knex';
 
-export const dbGetUserChatroom = userId =>
-  knex
-    .select('chatrooms.id')
-    .from('chatrooms')
-    .leftJoin('user_chatroom', 'chatroomId', 'chatrooms.id')
-    .where('participantId', userId);
+export const dbGetUserChatroom = (userId, participantId) => {
+  return knex.transaction(async trx => {
+    return trx
+      .raw(
+        `
+      select * from user_chatroom where "participantId" = ?
+      intersect
+      select * from user_chatroom where "participantId" = ?
+    `,
+        [userId, participantId],
+      )
+      .then(data => data.rows);
+  });
+};
 
 export const dbGetChatrooms = async userId => {
   let chatrooms = await knex

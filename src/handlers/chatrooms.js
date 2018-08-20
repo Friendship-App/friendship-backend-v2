@@ -5,7 +5,9 @@ import {
 } from '../models/chatrooms';
 
 export const getUserChatroom = (request, reply) =>
-  dbGetUserChatroom(request.query.userId).then(data => reply.response(data));
+  dbGetUserChatroom(request.pre.user.id, request.query.userId).then(data =>
+    reply.response(data),
+  );
 
 export const getChatrooms = (request, reply) =>
   dbGetChatrooms(request.pre.user.id).then(data => {
