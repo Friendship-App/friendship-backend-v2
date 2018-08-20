@@ -3,6 +3,7 @@ import { getAuthWithScope } from '../utils/auth';
 import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
 import {
   createEvent,
+  deleteEvent,
   getEventDetails,
   getEvents,
   joinEvent,
@@ -70,6 +71,16 @@ const events = [
       getEndpointDescription('Update a specific event', 'events'),
     ),
     handler: updateEvent,
+  },
+  {
+    method: 'PUT',
+    path: '/api/events/delete/{eventId}',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Delete a specific event', 'events'),
+    ),
+    handler: deleteEvent,
   },
 ];
 

@@ -1,5 +1,6 @@
 import {
   dbCreateEvent,
+  dbDeleteEvent,
   dbGetEventDetails,
   dbGetEvents,
   dbJoinEvent,
@@ -44,3 +45,9 @@ export const updateEvent = (request, reply) =>
   dbUpdateEvent(request.payload.eventData, request.payload.eventId).then(
     event => reply.response(event),
   );
+
+export const deleteEvent = (request, reply) => {
+  return dbDeleteEvent(request.params.eventId).then(data =>
+    reply.response(data),
+  );
+};

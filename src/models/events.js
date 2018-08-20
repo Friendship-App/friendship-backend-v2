@@ -298,9 +298,14 @@ export const dbLeaveEvent = (eventId, userId) =>
 
 export const dbUpdateEvent = (eventData, eventId) =>
   knex.transaction(async trx => {
-    console.log(eventData);
-    console.log(eventId);
     return trx('events')
       .update(eventData)
       .where({ id: eventId });
   });
+
+export const dbDeleteEvent = eventId => {
+  return knex
+    .del()
+    .from('events')
+    .where({ id: eventId });
+};
