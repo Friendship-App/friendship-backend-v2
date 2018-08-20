@@ -31,7 +31,7 @@ const users = [
     handler: getUserInformation,
   },
   {
-    method: 'PATCH',
+    method: 'POST',
     path: '/api/users/push-token',
     config: merge(
       {},

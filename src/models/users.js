@@ -147,6 +147,7 @@ export const dbGetUserInformation = async idOfUserAskedFor => {
 };
 
 export const dbRegisterNotificationToken = (userId, token) => {
+  console.log(token);
   return knex('users')
     .update({ notificationToken: token })
     .where({ id: userId })
