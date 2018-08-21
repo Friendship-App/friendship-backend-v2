@@ -25,3 +25,10 @@ export const dbGetUsers = () => {
     .groupBy('users.id')
     .orderBy('users.id', 'asc');
 };
+
+export const dbToggleAccountActivation = (userId, toggleTo) => {
+  return knex
+    .update({ active: toggleTo })
+    .from('users')
+    .where({ id: userId });
+};
