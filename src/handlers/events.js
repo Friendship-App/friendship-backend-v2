@@ -47,7 +47,7 @@ export const updateEvent = (request, reply) =>
   );
 
 export const deleteEvent = (request, reply) => {
-  return dbDeleteEvent(request.params.eventId).then(data =>
+  return dbDeleteEvent(request.params.eventId, request.pre.user.id).then(data =>
     reply.response(data),
   );
 };
