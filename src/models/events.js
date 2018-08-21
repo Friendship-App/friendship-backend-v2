@@ -304,20 +304,6 @@ export const dbUpdateEvent = (eventData, eventId) =>
       .where({ id: eventId });
   });
 
-export const dbGetParticipantsToken = (eventId, userId) => {
-  console.log('fetching tokens ...');
-  return knex.select().from('user_event');
-  return knex('user_event')
-    .leftJoin('users', 'users.id', 'user_event.participantId')
-    .whereNot({ participantId: userId })
-    .andWhere({ eventId })
-    .select('notificationToken')
-    .then(res => {
-      console.log(res);
-      return res;
-    });
-};
-
 export const dbDeleteEvent = (eventId, userId) => {
   return knex.transaction(async trx => {
     const participantsToken = await trx('user_event')
