@@ -9,6 +9,8 @@ import login from './login';
 import chatrooms from './chatrooms';
 import events from './events';
 import aws from './aws';
+import adminLogin from './admin/login';
+import adminUsers from './admin/users';
 
 const routes = [].concat(
   avatars,
@@ -22,6 +24,8 @@ const routes = [].concat(
   chatrooms,
   events,
   aws,
+  adminLogin,
+  adminUsers,
 );
 
 export default routes;

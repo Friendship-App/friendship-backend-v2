@@ -53,6 +53,48 @@ export const preVerifyCredentials = (
       return Boom.unauthorized(err);
     });
 
+export const preVerifyCredentialsAdmin = (
+  { payload: { email, password: passwordAttempt } },
+  reply,
+) =>
+  knex('users')
+    .first()
+    .where({ email: email.toLowerCase().trim() })
+    .leftJoin('secrets', 'users.id', 'secrets.ownerId')
+    .then(async user => {
+      if (!user) {
+        return Promise.reject(
+          `User with email '${email}' not found in database`,
+        );
+      }
+
+      if (await dbUserIsBanned(user)) {
+        return Promise.reject(`'${email}' has been banned`);
+      }
+
+      if (!user.password) {
+        return Promise.reject(
+          `User with email '${email}' lacks password: logins disabled`,
+        );
+      }
+
+      if (user.scope !== 'admin') {
+        return Promise.reject(`User with email '${email}' unauthorized`);
+      }
+
+      return comparePasswords(passwordAttempt, user);
+    })
+    .then(response => reply.response(response))
+    .catch(err => {
+      // TODO: log err to server console
+      // TODO: This is dirty but Futurice told me to do this ;)
+      // TODO: Please think of a better way to do this
+      if (err.valueOf().includes('activated')) {
+        return Boom.unauthorized(err);
+      }
+      return Boom.unauthorized(err);
+    });
+
 export const doAuth = {
   validate: {
     payload: {
@@ -63,6 +105,18 @@ export const doAuth = {
       Boom.unauthorized('Incorrect email or password!'),
   },
   pre: [{ method: preVerifyCredentials, assign: 'user' }],
+};
+
+export const doAuthAdmin = {
+  validate: {
+    payload: {
+      email: Joi.string().required(),
+      password: Joi.string().required(),
+    },
+    failAction: (request, reply) =>
+      reply.response(Boom.unauthorized('Incorrect email or password!')),
+  },
+  pre: [{ method: preVerifyCredentialsAdmin, assign: 'user' }],
 };
 
 export const createToken = fields => ({
