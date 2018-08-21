@@ -62,6 +62,7 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
     .andWhere(
       knex.raw(`uthate."tagId" IN (${hateTags}) AND uthate."love" = false`),
     )
+    .andWhere('users.active', true)
     .groupBy('users.id')
     .orderByRaw('loveCommon DESC, hateCommon DESC');
 
@@ -88,6 +89,7 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
       .whereNotIn('users.id', usersAlreadyFetchedId)
       .andWhereNot('users.id', userId)
       .andWhere('users.scope', 'user')
+      .andWhere('users.active', true)
       .groupBy('users.id');
 
     const limit = pageLimit - usersWithCommonTags.length;
