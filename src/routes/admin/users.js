@@ -1,7 +1,11 @@
 import { merge } from 'lodash';
 import { getAuthWithScope } from '../../utils/auth';
 import { getEndpointDescription } from '../../utils/endpointDescriptionGenerator';
-import { getUsers, toggleAccountActivation } from '../../handlers/admin/users';
+import {
+  deleteUser,
+  getUsers,
+  toggleAccountActivation,
+} from '../../handlers/admin/users';
 
 const users = [
   {
@@ -23,6 +27,16 @@ const users = [
       getEndpointDescription('Get all the users for the admin', 'users'),
     ),
     handler: toggleAccountActivation,
+  },
+  {
+    method: 'POST',
+    path: '/api/admin/users/delete/{userId}',
+    config: merge(
+      {},
+      getAuthWithScope('admin'),
+      getEndpointDescription('Delete a specific user', 'users'),
+    ),
+    handler: deleteUser,
   },
 ];
 

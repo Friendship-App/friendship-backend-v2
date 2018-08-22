@@ -22,6 +22,7 @@ export const dbGetUsers = () => {
     .select(userListFields)
     .count('banned_users.id as isbanned')
     .whereNot('users.scope', 'admin')
+    .whereNot('users.email', null)
     .groupBy('users.id')
     .orderBy('users.id', 'asc');
 };
@@ -31,4 +32,51 @@ export const dbToggleAccountActivation = (userId, toggleTo) => {
     .update({ active: toggleTo })
     .from('users')
     .where({ id: userId });
+};
+
+export const dbDeleteUser = userId => {
+  return knex.transaction(async trx => {
+    await trx
+      .del()
+      .from('user_tag')
+      .where({ userId });
+    await trx
+      .del()
+      .from('user_event')
+      .where({ participantId: userId });
+    await trx
+      .del()
+      .from('user_personality')
+      .where({ userId });
+    await trx
+      .del()
+      .from('secrets')
+      .where({ ownerId: userId });
+    await trx
+      .del()
+      .from('user_gender')
+      .where({ userId });
+    await trx
+      .del()
+      .from('user_location')
+      .where({ userId });
+
+    return trx
+      .update({
+        active: false,
+        createdAt: null,
+        lastActive: null,
+        email: null,
+        description: null,
+        image: null,
+        compatibility: null,
+        enableMatching: null,
+        birthyear: null,
+        notificationToken: null,
+        status: null,
+        mood: null,
+      })
+      .from('users')
+      .where({ id: userId });
+  });
 };
