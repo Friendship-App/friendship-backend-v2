@@ -5,9 +5,9 @@ export const dbGetUserChatroom = (userId, participantId) => {
     return trx
       .raw(
         `
-      select * from user_chatroom where "participantId" = ?
+      select "chatroomId" from user_chatroom where "participantId" = ?
       intersect
-      select * from user_chatroom where "participantId" = ?
+      select "chatroomId" from user_chatroom where "participantId" = ?
     `,
         [userId, participantId],
       )
