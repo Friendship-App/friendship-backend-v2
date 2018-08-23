@@ -1,5 +1,4 @@
 import knex from '../utils/knex';
-import moment from 'moment';
 import { notifyEventCancelled } from '../utils/notifications';
 
 const eventFields = [
@@ -16,6 +15,7 @@ const eventFields = [
   'events.participantsMix',
   'events.hostId',
   'events.chatroomId',
+  'events.active',
 ];
 
 export const dbGetEvents = async userId => {
@@ -54,6 +54,7 @@ export const dbGetEvents = async userId => {
     .andWhere(
       knex.raw(`uthate."tagId" IN (${hateTags}) AND uthate."love" = false`),
     )
+    .andWhere('events.active', true)
     .then(res => (res[0].eventids ? res[0].eventids : []));
 
   return knex
@@ -82,6 +83,7 @@ export const dbGetEvents = async userId => {
         .andWhere(
           knex.raw(`uthate."tagId" IN (${hateTags}) AND uthate."love" = false`),
         )
+        .andWhere('events.active', true)
         .as('filteredEvents')
         .groupBy('events.id');
     }, true)
@@ -106,6 +108,7 @@ export const dbGetEvents = async userId => {
         .whereIn('events.city', userLocations)
         // .orWhere('events.hostId', userId)
         .whereNotIn('events.id', eventsWithLoveAndHateInCommon)
+        .andWhere('events.active', true)
         .groupBy('events.id');
     }, true)
     .as('allEvents')
@@ -117,6 +120,7 @@ export const dbGetEvents = async userId => {
           .from('users')
           .leftJoin('user_event', 'participantId', 'users.id')
           .where('eventId', data[i].id)
+          .andWhere('users.active', true)
           .then(
             participantDetails =>
               (data[i].participantsDetails = participantDetails),
