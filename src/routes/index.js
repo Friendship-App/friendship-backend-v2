@@ -11,6 +11,7 @@ import events from './events';
 import aws from './aws';
 import adminLogin from './admin/login';
 import adminUsers from './admin/users';
+import adminTags from './admin/tags';
 
 const routes = [].concat(
   avatars,
@@ -26,6 +27,7 @@ const routes = [].concat(
   aws,
   adminLogin,
   adminUsers,
+  adminTags,
 );
 
 export default routes;
