@@ -1,10 +1,11 @@
 exports.up = knex => {
-  return knex.schema.hasTable('users').then(exists => {
+  return knex.schema.hasTable('users').then(async exists => {
     if (exists) {
+      await knex.schema.alterTable('users', t => {
+        t.dropColumn('active');
+      });
       return knex.schema.alterTable('users', t => {
-        t.text('active')
-          .defaultTo(true)
-          .alter();
+        t.boolean('active').defaultTo(true);
       });
     }
   });
