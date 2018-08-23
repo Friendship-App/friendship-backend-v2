@@ -50,7 +50,7 @@ export const dbGetChatrooms = async userId => {
 
     if (!chatrooms[i].isEventChatroom) {
       await knex
-        .select('users.id', 'mood', 'username', 'image')
+        .select('users.id', 'mood', 'username', 'image', 'active')
         .from('user_chatroom')
         .leftJoin('users', 'user_chatroom.participantId', 'users.id')
         .where('user_chatroom.chatroomId', chatrooms[i].chatroomId)
@@ -60,7 +60,12 @@ export const dbGetChatrooms = async userId => {
         );
     } else {
       await knex
-        .select('events.title', 'events.eventImage', 'events.id')
+        .select(
+          'events.title',
+          'events.eventImage',
+          'events.id',
+          'events.active',
+        )
         .from('events')
         .where('events.chatroomId', chatrooms[i].chatroomId)
         .then(eventData => (chatrooms[i].eventData = eventData[0]));
