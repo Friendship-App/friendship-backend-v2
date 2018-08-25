@@ -16,11 +16,14 @@ const userListFields = [
   'users.image',
 ];
 
-export const dbGetUsers = () => {
+export const dbGetUsers = username => {
   return knex('users')
     .leftJoin('banned_users', 'banned_users.userId', 'users.id')
+    .leftJoin('reports', 'reports.userId', 'users.id')
     .select(userListFields)
     .count('banned_users.id as isbanned')
+    .count('reports.id as reports')
+    .whereRaw(`LOWER(users.username) LIKE LOWER('%${username}%')`)
     .whereNot('users.scope', 'admin')
     .whereNot('users.email', null)
     .groupBy('users.id')

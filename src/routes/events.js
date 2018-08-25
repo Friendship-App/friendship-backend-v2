@@ -8,6 +8,7 @@ import {
   getEvents,
   joinEvent,
   leaveEvent,
+  reportEvent,
   updateEvent,
 } from '../handlers/events';
 
@@ -81,6 +82,16 @@ const events = [
       getEndpointDescription('Delete a specific event', 'events'),
     ),
     handler: deleteEvent,
+  },
+  {
+    method: 'POST',
+    path: '/api/events/report',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Report a specific event', 'events'),
+    ),
+    handler: reportEvent,
   },
 ];
 

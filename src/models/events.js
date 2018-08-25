@@ -1,5 +1,6 @@
 import knex from '../utils/knex';
 import { notifyEventCancelled } from '../utils/notifications';
+import moment from 'moment';
 
 const eventFields = [
   'events.id',
@@ -326,4 +327,16 @@ export const dbDeleteEvent = (eventId, userId) => {
       .from('events')
       .where({ id: eventId });
   });
+};
+
+export const dbReportEvent = (data, reporterId) => {
+  return knex
+    .insert({
+      eventId: data.eventId,
+      description: data.reason,
+      createdAt: moment(),
+      reported_by: reporterId,
+    })
+    .into('event_reports')
+    .returning('*');
 };

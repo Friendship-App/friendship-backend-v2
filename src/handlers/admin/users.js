@@ -5,7 +5,7 @@ import {
 } from '../../models/admin/users';
 
 export const getUsers = (request, reply) => {
-  return dbGetUsers().then(data => reply.response(data));
+  return dbGetUsers(request.query.username).then(data => reply.response(data));
 };
 
 export const toggleAccountActivation = (request, reply) => {
