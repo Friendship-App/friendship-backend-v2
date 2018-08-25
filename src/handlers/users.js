@@ -2,6 +2,7 @@ import {
   dbGetUserInformation,
   dbGetUsersBatch,
   dbRegisterNotificationToken,
+  dbReportUser,
   dbUpdateAccount,
   dbUpdateProfile,
 } from '../models/users';
@@ -34,5 +35,11 @@ export const updateProfile = (request, reply) => {
 export const updateAccount = (request, reply) => {
   return dbUpdateAccount(request.payload, request.pre.user.id).then(user =>
     reply.response(user),
+  );
+};
+
+export const reportUser = (request, reply) => {
+  return dbReportUser(request.payload, request.pre.user.id).then(data =>
+    reply.response(data),
   );
 };

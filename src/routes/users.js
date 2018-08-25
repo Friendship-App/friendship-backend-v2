@@ -4,6 +4,7 @@ import {
   getBatchUsers,
   getUserInformation,
   registerNotificationToken,
+  reportUser,
   updateAccount,
   updateProfile,
 } from '../handlers/users';
@@ -59,6 +60,16 @@ const users = [
       getEndpointDescription('Update a user account', 'users'),
     ),
     handler: updateAccount,
+  },
+  {
+    method: 'POST',
+    path: '/api/users/report',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Report a user', 'users'),
+    ),
+    handler: reportUser,
   },
 ];
 

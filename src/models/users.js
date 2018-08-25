@@ -2,6 +2,7 @@ import knex from '../utils/knex';
 import { merge } from 'lodash';
 import { getUserHate, getUserLove } from './tags';
 import { hashPassword } from '../handlers/register';
+import moment from 'moment';
 
 const userListFields = [
   'users.id',
@@ -210,4 +211,16 @@ export const dbUpdateAccount = (newUserAccountData, userId) => {
     }
     return user;
   });
+};
+
+export const dbReportUser = (data, reporterId) => {
+  return knex
+    .insert({
+      userId: data.userId,
+      description: data.reason,
+      reported_by: reporterId,
+      createdAt: moment(),
+    })
+    .into('reports')
+    .returning('*');
 };
