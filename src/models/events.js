@@ -290,17 +290,43 @@ export const dbGetEventTopYeahsNahs = async eventId => {
   return topYeahsNahs;
 };
 
-export const dbJoinEvent = (eventId, userId) =>
-  knex
-    .insert({ participantId: userId, eventId })
-    .into('user_event')
-    .returning('*');
+export const dbJoinEvent = (eventId, userId) => {
+  return knex.transaction(async trx => {
+    await trx
+      .insert({ participantId: userId, eventId })
+      .into('user_event')
+      .returning('*');
 
-export const dbLeaveEvent = (eventId, userId) =>
-  knex
-    .del()
-    .from('user_event')
-    .where({ participantId: userId, eventId });
+    const event = await trx
+      .select()
+      .from('events')
+      .where({ id: eventId })
+      .then(events => events[0]);
+    return trx
+      .insert({ chatroomId: event.chatroomId, participantId: userId })
+      .into('user_chatroom')
+      .returning('*');
+  });
+};
+
+export const dbLeaveEvent = (eventId, userId) => {
+  return knex.transaction(async trx => {
+    const event = await trx
+      .select()
+      .from('events')
+      .where({ id: eventId })
+      .then(events => events[0]);
+    await trx
+      .del()
+      .from('user_chatroom')
+      .where({ participantId: userId, chatroomId: event.chatroomId });
+
+    return trx
+      .del()
+      .from('user_event')
+      .where({ participantId: userId, eventId });
+  });
+};
 
 export const dbUpdateEvent = (eventData, eventId) =>
   knex.transaction(async trx => {
