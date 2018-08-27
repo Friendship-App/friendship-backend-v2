@@ -2,7 +2,7 @@ import knex from '../utils/knex';
 
 export const dbGetUserChatroom = (userId, participantId) => {
   return knex.transaction(async trx => {
-    return trx
+    const chatroom = await trx
       .raw(
         `
       select "chatroomId" from user_chatroom where "participantId" = ?
@@ -12,6 +12,21 @@ export const dbGetUserChatroom = (userId, participantId) => {
         [userId, participantId],
       )
       .then(data => data.rows);
+
+    if (chatroom.length > 0) {
+      let i = 0;
+      while (i < chatroom.length) {
+        const isEventChatroom = await trx
+          .select()
+          .from('events')
+          .where({ chatroomId: chatroom[i].id });
+        if (isEventChatroom.length === 0) {
+          return [chatroom[i]];
+        }
+        i++;
+      }
+    }
+    return [];
   });
 };
 
