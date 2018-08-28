@@ -1,4 +1,5 @@
 import {
+  dbDeleteUser,
   dbGetUserInformation,
   dbGetUsersBatch,
   dbRegisterNotificationToken,
@@ -42,4 +43,8 @@ export const reportUser = (request, reply) => {
   return dbReportUser(request.payload, request.pre.user.id).then(data =>
     reply.response(data),
   );
+};
+
+export const deleteUser = (request, reply) => {
+  return dbDeleteUser(request.pre.user.id).then(data => reply.response(data));
 };

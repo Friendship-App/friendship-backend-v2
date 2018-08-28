@@ -224,3 +224,50 @@ export const dbReportUser = (data, reporterId) => {
     .into('reports')
     .returning('*');
 };
+
+export const dbDeleteUser = userId => {
+  return knex.transaction(async trx => {
+    await trx
+      .del()
+      .from('user_tag')
+      .where({ userId });
+    await trx
+      .del()
+      .from('user_event')
+      .where({ participantId: userId });
+    await trx
+      .del()
+      .from('user_personality')
+      .where({ userId });
+    await trx
+      .del()
+      .from('secrets')
+      .where({ ownerId: userId });
+    await trx
+      .del()
+      .from('user_gender')
+      .where({ userId });
+    await trx
+      .del()
+      .from('user_location')
+      .where({ userId });
+
+    return trx
+      .update({
+        active: false,
+        createdAt: null,
+        lastActive: null,
+        email: null,
+        description: null,
+        image: null,
+        compatibility: null,
+        enableMatching: null,
+        birthyear: null,
+        notificationToken: null,
+        status: null,
+        mood: null,
+      })
+      .from('users')
+      .where({ id: userId });
+  });
+};

@@ -1,6 +1,7 @@
 import { merge } from 'lodash';
 import { getEndpointDescription } from '../utils/endpointDescriptionGenerator';
 import {
+  deleteUser,
   getBatchUsers,
   getUserInformation,
   registerNotificationToken,
@@ -70,6 +71,16 @@ const users = [
       getEndpointDescription('Report a user', 'users'),
     ),
     handler: reportUser,
+  },
+  {
+    method: 'POST',
+    path: '/api/users/delete',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Delete a specific user', 'users'),
+    ),
+    handler: deleteUser,
   },
 ];
 
