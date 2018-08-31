@@ -13,6 +13,7 @@ import adminLogin from './admin/login';
 import adminUsers from './admin/users';
 import adminTags from './admin/tags';
 import adminEvents from './admin/events';
+import adminMetrics from './admin/metrics';
 
 const routes = [].concat(
   avatars,
@@ -30,6 +31,7 @@ const routes = [].concat(
   adminUsers,
   adminTags,
   adminEvents,
+  adminMetrics,
 );
 
 export default routes;
