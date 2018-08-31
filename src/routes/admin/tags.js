@@ -1,6 +1,11 @@
 import { merge } from 'lodash';
 import { getEndpointDescription } from '../../utils/endpointDescriptionGenerator';
-import { addTag, deleteTag, getTags } from '../../handlers/admin/tags';
+import {
+  addTag,
+  deleteTag,
+  getTags,
+  updateTag,
+} from '../../handlers/admin/tags';
 import { getAuthWithScope } from '../../utils/auth';
 
 const tags = [
@@ -33,6 +38,16 @@ const tags = [
       getEndpointDescription('Add a new tag', 'tags'),
     ),
     handler: addTag,
+  },
+  {
+    method: 'POST',
+    path: '/api/admin/tags/update',
+    config: merge(
+      {},
+      getAuthWithScope('admin'),
+      getEndpointDescription('Update a tag', 'tags'),
+    ),
+    handler: updateTag,
   },
 ];
 

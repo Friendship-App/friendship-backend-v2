@@ -2,7 +2,9 @@ import knex from '../../utils/knex';
 import moment from 'moment';
 
 export const dbGetTags = () => {
-  return knex('tags').select('*');
+  return knex('tags')
+    .select('*')
+    .orderBy('tags.id');
 };
 
 export const dbDeleteTag = tagId => {
@@ -13,7 +15,6 @@ export const dbDeleteTag = tagId => {
 };
 
 export const dbAddTag = (newTagData, creatorId) => {
-  console.log(creatorId);
   return knex
     .insert({
       creatorId,
@@ -22,4 +23,11 @@ export const dbAddTag = (newTagData, creatorId) => {
     })
     .into('tags')
     .returning('*');
+};
+
+export const dbUpdateTag = (tagId, name) => {
+  return knex
+    .update({ name })
+    .from('tags')
+    .where({ id: tagId });
 };
