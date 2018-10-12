@@ -89,7 +89,8 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
           }
           return comp;
         });
-        return usersWithSameLocations;
+
+        return usersWithSameLocations.slice(0, pageLimit);
       });
   });
 };
