@@ -39,66 +39,59 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
 
   const usersAlreadyFetchedId = [userId];
 
-  let usersWithCommonTags = await knex('users')
-    .select([
-      ...userListFields,
-      knex.raw('array_agg(DISTINCT "gender") AS genders'),
-      knex.raw('array_agg(DISTINCT locations.name) AS locations'),
-      knex.raw('count(DISTINCT utlove."tagId") AS loveCommon'),
-      knex.raw('count(DISTINCT uthate."tagId") AS hateCommon'),
-    ])
-    .from('users')
-    .leftJoin('user_gender', 'user_gender.userId', 'users.id')
-    .leftJoin('genders', 'genders.id', 'user_gender.genderId')
-    .leftJoin('user_location', 'user_location.userId', 'users.id')
-    .leftJoin('locations', 'locations.id', 'user_location.locationId')
-    .leftJoin('user_tag as utlove', 'utlove.userId', 'users.id')
-    .leftJoin('user_tag as uthate', 'uthate.userId', 'users.id')
-    .whereIn('user_location.locationId', userLocations)
-    .whereNotIn('users.id', usersAlreadyFetchedId)
-    .andWhere('users.scope', 'user')
-    .andWhere(
-      knex.raw(`utlove."tagId" IN (${loveTags}) AND utlove."love" = true`),
-    )
-    .andWhere(
-      knex.raw(`uthate."tagId" IN (${hateTags}) AND uthate."love" = false`),
-    )
-    .andWhere('users.active', true)
-    .groupBy('users.id')
-    .orderByRaw('loveCommon DESC, hateCommon DESC');
-
-  usersWithCommonTags = usersWithCommonTags.slice(0, pageLimit);
-
-  if (usersWithCommonTags.length < pageLimit) {
-    usersWithCommonTags.map(user => usersAlreadyFetchedId.push(user.id));
-    let usersWithNoCommonTags = await knex
+  return knex.transaction(async trx => {
+    return trx
       .select([
         ...userListFields,
         knex.raw('array_agg(DISTINCT "gender") AS genders'),
         knex.raw('array_agg(DISTINCT locations.name) AS locations'),
-        knex.raw(`0 AS loveCommon`),
-        knex.raw(`0 AS hateCommon `),
       ])
       .from('users')
       .leftJoin('user_gender', 'user_gender.userId', 'users.id')
       .leftJoin('genders', 'genders.id', 'user_gender.genderId')
       .leftJoin('user_location', 'user_location.userId', 'users.id')
       .leftJoin('locations', 'locations.id', 'user_location.locationId')
-      .leftJoin('user_tag as utlove', 'utlove.userId', 'users.id')
-      .leftJoin('user_tag as uthate', 'uthate.userId', 'users.id')
-      .whereIn('user_location.locationId', userLocations)
+      .whereIn('locationId', userLocations)
       .whereNotIn('users.id', usersAlreadyFetchedId)
-      .andWhereNot('users.id', userId)
-      .andWhere('users.scope', 'user')
-      .andWhere('users.active', true)
-      .groupBy('users.id');
+      .groupBy('users.id')
+      .then(async usersWithSameLocations => {
+        for (let i = 0; i < usersWithSameLocations.length; i++) {
+          let loveCommon = await trx('user_tag')
+            .select(trx.raw('count(DISTINCT "tagId") AS loveCommon'))
+            .where(trx.raw(`"tagId" IN (${loveTags}) AND "love" = true`))
+            .andWhere('userId', usersWithSameLocations[i].id);
 
-    const limit = pageLimit - usersWithCommonTags.length;
-    usersWithNoCommonTags = usersWithNoCommonTags.slice(0, limit);
-    usersWithCommonTags = usersWithCommonTags.concat(usersWithNoCommonTags);
-  }
+          let hateCommon = await trx('user_tag')
+            .select(trx.raw('count(DISTINCT "tagId") AS hateCommon'))
+            .where(trx.raw(`"tagId" IN (${hateTags}) AND "love" = false`))
+            .andWhere('userId', usersWithSameLocations[i].id);
 
-  return usersWithCommonTags;
+          usersWithSameLocations[i]['lovecommon'] = parseInt(
+            loveCommon[0].lovecommon,
+          );
+          usersWithSameLocations[i]['hatecommon'] = parseInt(
+            hateCommon[0].hatecommon,
+          );
+        }
+
+        usersWithSameLocations.sort((a, b) => {
+          let comp = 0;
+          if (a.lovecommon > b.lovecommon) {
+            comp = -1;
+          } else if (a.lovecommon < b.lovecommon) {
+            comp = 1;
+          } else {
+            if (a.hatecommon > b.hatecommon) {
+              comp = -1;
+            } else if (a.hatecommon < b.hatecommon) {
+              comp = 1;
+            }
+          }
+          return comp;
+        });
+        return usersWithSameLocations;
+      });
+  });
 };
 
 export const dbUserIsBanned = user => {
