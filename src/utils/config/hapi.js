@@ -1,4 +1,5 @@
 import logOptions from './log';
+import metrics from '../../plugins/metrics';
 
 export const hapiManifest = {
   server: {
@@ -23,6 +24,9 @@ export const hapiManifest = {
             version: 'v1.0',
           },
         },
+      },
+      {
+        plugin: metrics,
       },
     ],
   },
