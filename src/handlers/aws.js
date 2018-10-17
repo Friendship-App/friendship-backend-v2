@@ -1,7 +1,17 @@
-import aws from 'aws-sdk';
+const aws = require('aws-sdk');
 
 const S3_BUCKET = 'friendshipapp';
-aws.config.region = 'eu-west-2';
+
+const credentials = {
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'AKIAJL3ZMYV4REG3ZFGA',
+  secretAccessKey:
+    process.env.AWS_SECRET_ACCESS_KEY ||
+    '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',
+};
+
+aws.config.update({ credentials, region: 'eu-west-2' });
+
+const s3 = new aws.S3();
 
 export const getSignedUrl = async (request, reply) => {
   const fileName = request.query['file-name'];
@@ -14,9 +24,7 @@ export const getSignedUrl = async (request, reply) => {
     ACL: 'public-read',
   };
 
-  const url = await getSignedUrlPromise('putObject', s3Params).catch(err =>
-    console.log(err),
-  );
+  const url = await s3.getSignedUrl('putObject', s3Params);
 
   return reply.response(
     JSON.stringify({
@@ -25,12 +33,3 @@ export const getSignedUrl = async (request, reply) => {
     }),
   );
 };
-
-const s3 = new aws.S3();
-
-const getSignedUrlPromise = (operation, params) =>
-  new Promise((resolve, reject) => {
-    s3.getSignedUrl(operation, params, (err, url) => {
-      err ? reject(err) : resolve(url);
-    });
-  });
