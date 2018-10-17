@@ -2,11 +2,12 @@ const aws = require('aws-sdk');
 
 const S3_BUCKET = 'friendshipapp';
 
+// || 'AKIAJL3ZMYV4REG3ZFGA
+// || 'ZSJAYML0cIMVlHwGr1+MV8nRDlQy3xFWDOjWc0CY'
+
 const credentials = {
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'AKIAJL3ZMYV4REG3ZFGA',
-  secretAccessKey:
-    process.env.AWS_SECRET_ACCESS_KEY ||
-    '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',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 };
 
 aws.config.update({ credentials, region: 'eu-west-2' });
