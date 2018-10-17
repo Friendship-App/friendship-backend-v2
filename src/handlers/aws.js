@@ -2,8 +2,8 @@ const aws = require('aws-sdk');
 
 const S3_BUCKET = 'friendshipapp';
 
-// || 'AKIAJL3ZMYV4REG3ZFGA
-// || 'ZSJAYML0cIMVlHwGr1+MV8nRDlQy3xFWDOjWc0CY'
+// || 'AKIAIW5ZRWMIBSEETM3Q'
+// || '/apu3+B9lRfhZn1razcXZnBpDjHkbQd1W6gOgqLw'
 
 const credentials = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,

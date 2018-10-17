@@ -45,7 +45,7 @@ exports.seed = knex =>
   knex
     .batchInsert(
       'personalities',
-      simpleFixtures.generateFixtures(personalityFields, 8),
+      simpleFixtures.generateFixtures(personalityFields, personalities.length),
     )
     .then(() =>
       knex.batchInsert(

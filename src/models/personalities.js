@@ -27,6 +27,12 @@ export const dbUpdateUserPersonalities = (personalities, userId) =>
         level: 5,
       }),
     );
+
+    console.log('START - - - - - - - - - - - - - - - - -');
+    console.log(personalities);
+    console.log(updatedPersonalities);
+    console.log('END - - - - - - - - - - - - - - - - -');
+
     return trx
       .insert(updatedPersonalities)
       .into('user_personality')
