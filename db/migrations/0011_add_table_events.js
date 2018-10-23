@@ -12,7 +12,7 @@ exports.up = knex =>
       table
         .string('eventImage')
         .defaultTo(
-          'https://s3.eu-west-2.amazonaws.com/friendshipapp/events/default.jpg',
+          'https://s3.eu-west-2.amazonaws.com/friendship-app/events/default.jpg',
         );
       table.text('description').notNullable();
       table.text('address').notNullable();

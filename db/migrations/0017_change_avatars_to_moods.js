@@ -8,83 +8,83 @@ exports.up = knex =>
       knex('moods').insert([
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/angel.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/angel.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/crying.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/crying.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/disappointed.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/disappointed.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/dizzy.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/dizzy.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/doubtful.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/doubtful.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/dreaming.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/dreaming.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/grinning.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/grinning.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/in-love.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/in-love.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/love-kiss.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/love-kiss.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/no-mouth.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/no-mouth.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/rolling-eyes.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/rolling-eyes.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/sleeping.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/sleeping.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/smiling-devil.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/smiling-devil.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/smiling.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/smiling.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/straight-face.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/straight-face.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/surprised.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/surprised.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/thinking.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/thinking.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/tired.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/tired.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/upside-down-smile.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/upside-down-smile.png',
         },
         {
           uri:
-            'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/winking.png',
+            'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/winking.png',
         },
       ]),
     )
@@ -92,7 +92,7 @@ exports.up = knex =>
       knex.schema.alterTable('users', t => {
         t.dropColumn('avatar');
         t.string('mood').defaultTo(
-          'https://s3.eu-west-2.amazonaws.com/friendshipapp/moods/smiling.png',
+          'https://s3.eu-west-2.amazonaws.com/friendship-app/moods/smiling.png',
         );
       }),
     );

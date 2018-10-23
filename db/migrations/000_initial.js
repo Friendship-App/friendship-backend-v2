@@ -23,12 +23,12 @@ exports.up = knex =>
       table
         .text('avatar')
         .defaultTo(
-          'https://s3.eu-west-2.amazonaws.com/friendshipapp/avatars/avatar1.png',
+          'https://s3.eu-west-2.amazonaws.com/friendship-app/avatars/avatar1.png',
         );
       table
         .string('image')
         .defaultTo(
-          'https://s3.eu-west-2.amazonaws.com/friendshipapp/profile/default.jpg',
+          'https://s3.eu-west-2.amazonaws.com/friendship-app/profile/default.jpg',
         );
       table.text('compatibility');
       table.boolean('enableMatching').defaultTo(false);
