@@ -9,6 +9,7 @@ exports.seed = knex =>
       {
         active: true,
         email: 'friendshipapp@outlook.com',
+        username: 'friendship',
         scope: 'admin',
       },
       'id',
