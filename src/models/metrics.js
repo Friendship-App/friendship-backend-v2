@@ -407,6 +407,9 @@ export const dbUpdateAverageConversationsLength = async () => {
     .groupBy('Date', 'Rooms', 't1.chatCount')
     .orderBy('Date', 'desc');
 
+  // return early if there are no dayStats
+  if (dayStats.length < 1) return Promise.resolve(null);
+
   const avgLength = moment(dayStats[0].Date)
     .startOf('day')
     .isSame(moment().startOf('day'))
