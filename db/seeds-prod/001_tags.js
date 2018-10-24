@@ -1,18 +1,25 @@
 const moment = require('moment');
 
 const tagsLabel = [
-  'Eating well',
-  'Doing fitness stuff',
-  'Netflix & chill',
-  'Coffee & discussing',
-  'Backpacking',
-  'Playing video games',
-  'Rap-music',
-  'Incorrect jokes/Memes',
-  'Art galleries',
-  'Cats & Dogs',
-  'Spirituality',
-  'Vegetarian food',
+  'Wolt over new recipes',
+  'Lover of nature activities',
+  'Music geek',
+  'Books over Netflix',
+  'Talking about politics',
+  'Sporty lifestyle',
+  'Keeping up with trends',
+  'Bigger group better fun',
+  'Meatlover over vegan',
+  'Philosophical and spiritual topics',
+  'Weekends are for parties',
+  'Fascinated about arts',
+  'Video Games',
+  'Milkshakes over protein shakes',
+  'Career is a high priority',
+  'Interested in meditation',
+  'Fan of social media',
+  'Reading fiction over non-fiction',
+  'Dark sense of humour',
 ];
 
 const tags = [];
