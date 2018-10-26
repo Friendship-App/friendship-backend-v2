@@ -12,7 +12,8 @@ export const dbGetTos = id =>
 export const dbGetLatestTos = () =>
   knex('terms_of_service')
     .first(tosFields)
-    .orderBy('createdAt', 'desc');
+    .orderBy('createdAt', 'desc')
+    .then(x => x || { id: 1, tos_text: '', createdAt: new Date() });
 
 export const dbCreateTos = ({ ...fields }) =>
   knex.transaction(async trx => {
