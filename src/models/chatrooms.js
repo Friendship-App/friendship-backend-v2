@@ -83,9 +83,14 @@ export const dbGetChatrooms = async userId => {
         )
         .from('events')
         .where('events.chatroomId', chatrooms[i].chatroomId)
-        .then(eventData => (chatrooms[i].eventData = eventData[0]));
+        .then(eventData => {
+          if (eventData.length > 0) chatrooms[i].eventData = eventData[0];
+          else chatrooms[i].missingEvent = true;
+        });
     }
   }
+
+  chatrooms = chatrooms.filter(chatroom => !chatroom.missingEvent);
 
   /*for (let i = chatrooms.length - 1; i > 0; i--) {
     if (!chatrooms[i].lastMessage) {
