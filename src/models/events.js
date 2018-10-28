@@ -197,63 +197,41 @@ export const dbGetEventPersonality = async eventId => {
 };
 
 export const dbGetEventParticipants = async (event, userId) => {
-  const hateCommonLoveCommon = await knex.raw(`SELECT "users"."id","users"."mood","users"."username","users"."image",
-    count(DISTINCT "tags"."name") AS "hateCommon"
-    FROM "users"
-    left join "user_tag"
-    ON "user_tag"."userId" = "users"."id"
-    left join "tags"
-    ON "tags"."id" = "user_tag"."tagId"
-    WHERE "user_tag"."love" = ${false}
-    AND "users"."id" IN (SELECT "users"."id"  FROM "users"
-          left join "user_event"
-          ON "user_event"."participantId" = "users"."id"
-          left join "events"
-          ON "events"."id" = "user_event"."eventId"
-          WHERE "user_event"."eventId" = ${event.id})
-    AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
-                      left join "tags" ON "tags"."id" = "user_tag"."tagId"
-                      WHERE "user_tag"."userId" = ${userId}
-                      AND "user_tag"."love" = ${false})
-    GROUP BY "users"."id"`);
+  const participants = await knex('users')
+    .innerJoin('user_event', 'users.id', 'user_event.participantId')
+    .where('user_event.eventId', event.id)
+    .select(['users.id', 'users.mood', 'users.username', 'users.image']);
 
-  const loveCommon = await knex.raw(`SELECT "users"."id","users"."username","users"."image",
-      count(DISTINCT "tags"."name") AS "loveCommon"
-      FROM "users"
-      left join "user_tag"
-      ON "user_tag"."userId" = "users"."id"
-      left join "tags"
-      ON "tags"."id" = "user_tag"."tagId"
-      WHERE "user_tag"."love" = ${true}
-      AND "users"."id" != ${userId}
-      AND "users"."id" IN (SELECT "users"."id"  FROM "users"
-            left join "user_event"
-            ON "user_event"."participantId" = "users"."id"
-            left join "events"
-            ON "events"."id" = "user_event"."eventId"
-            WHERE "user_event"."eventId" = ${event.id})
-      AND "tags"."name" IN (SELECT "tags"."name" FROM "user_tag"
-                        left join "tags" ON "tags"."id" = "user_tag"."tagId"
-                        WHERE "user_tag"."userId" = ${userId}
-                        AND "user_tag"."love" = ${true})
-      GROUP BY "users"."id"`);
+  participants.sort(
+    (a, b) => (a.id === event.hostId ? -1 : b.id === event.hostId ? 1 : 0),
+  );
 
-  hateCommonLoveCommon.rows.map(hate => {
-    loveCommon.rows.map(love => {
-      if (love.id === hate.id) {
-        hate.loveCommon = love.loveCommon;
-      }
-    });
+  const userLoveTags = (await knex('user_tag')
+    .select('tagId')
+    .where({ userId, love: true })).map(x => x.tagId);
+  const userHateTags = (await knex('user_tag')
+    .select('tagId')
+    .where({ userId, love: false })).map(x => x.tagId);
+  const promises = participants.map(async participant => {
+    if (participant.id === userId) return Promise.resolve();
+
+    const loveCommon = await knex.raw(
+      'select count("tagId") as count from user_tag where "userId" = ? and "tagId" = any(?)',
+      [participant.id, userLoveTags],
+    );
+    participant.loveCommon = loveCommon.rows[0].count;
+
+    const hateCommon = await knex.raw(
+      'select count("tagId") as count from user_tag where "userId" = ? and "tagId" = any(?)',
+      [participant.id, userHateTags],
+    );
+    participant.hateCommon = hateCommon.rows[0].count;
+
+    return participant;
   });
-  hateCommonLoveCommon.rows.map((user, index) => {
-    if (user.id == event.hostId) {
-      const hostUser = user;
-      hateCommonLoveCommon.rows.splice(index, index + 1);
-      hateCommonLoveCommon.rows.unshift(hostUser);
-    }
-  });
+  await Promise.all(promises);
 
-  return hateCommonLoveCommon.rows;
+  return participants;
 };
 
 export const dbGetEventTopYeahsNahs = async eventId => {
