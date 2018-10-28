@@ -197,6 +197,16 @@ export const dbGetEventPersonality = async eventId => {
 };
 
 export const dbGetEventParticipants = async (event, userId) => {
+  const participants = await knex('users')
+    .innerJoin('user_event', 'users.id', 'user_event.participantId')
+    .where('user_event.eventId', event.id)
+    .select(['users.id', 'users.mood', 'users.username', 'users.image']);
+
+  const hostIndex = participants.findIndex(user => user.id === event.hostId);
+  const host = participants[hostIndex];
+  participants.splice(hostIndex, hostIndex + 1);
+  participants.unshift(host);
+
   const hateCommonLoveCommon = await knex.raw(`SELECT "users"."id","users"."mood","users"."username","users"."image",
     count(DISTINCT "tags"."name") AS "hateCommon"
     FROM "users"
@@ -245,15 +255,8 @@ export const dbGetEventParticipants = async (event, userId) => {
       }
     });
   });
-  hateCommonLoveCommon.rows.map((user, index) => {
-    if (user.id == event.hostId) {
-      const hostUser = user;
-      hateCommonLoveCommon.rows.splice(index, index + 1);
-      hateCommonLoveCommon.rows.unshift(hostUser);
-    }
-  });
 
-  return hateCommonLoveCommon.rows;
+  return participants;
 };
 
 export const dbGetEventTopYeahsNahs = async eventId => {
