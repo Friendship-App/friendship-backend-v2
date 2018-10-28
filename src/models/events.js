@@ -202,10 +202,9 @@ export const dbGetEventParticipants = async (event, userId) => {
     .where('user_event.eventId', event.id)
     .select(['users.id', 'users.mood', 'users.username', 'users.image']);
 
-  const hostIndex = participants.findIndex(user => user.id === event.hostId);
-  const host = participants[hostIndex];
-  participants.splice(hostIndex, hostIndex + 1);
-  participants.unshift(host);
+  participants.sort(
+    (a, b) => (a.id === event.hostId ? -1 : b.id === event.hostId ? 1 : 0),
+  );
 
   const userLoveTags = (await knex('user_tag')
     .select('tagId')
