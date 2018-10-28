@@ -12,15 +12,9 @@ import moment from 'moment';
 
 export const getEvents = (request, reply) =>
   dbGetEvents(request.pre.user.id).then(res => {
-    const events = res;
-    for (let i = events.length - 1; i > -1; i--) {
-      if (
-        moment(moment(events[i].date).format()).isBefore(request.params.time) ||
-        events[i].maxParticipants <= events[i].participants
-      ) {
-        events.splice(i, 1);
-      }
-    }
+    const events = res.filter(event =>
+      moment(moment(event.date).format()).isAfter(moment()),
+    );
     return reply.response(events);
   });
 
