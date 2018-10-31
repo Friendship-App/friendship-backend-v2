@@ -2,6 +2,7 @@ import { merge } from 'lodash';
 import { getAuthWithScope } from '../../utils/auth';
 import { getEndpointDescription } from '../../utils/endpointDescriptionGenerator';
 import {
+  banUser,
   deleteUser,
   getUsers,
   toggleAccountActivation,
@@ -37,6 +38,16 @@ const users = [
       getEndpointDescription('Delete a specific user', 'users'),
     ),
     handler: deleteUser,
+  },
+  {
+    method: 'POST',
+    path: '/users/{userId}/ban',
+    config: merge(
+      {},
+      getAuthWithScope('admin'),
+      getEndpointDescription('Ban a user', 'users'),
+    ),
+    handler: banUser,
   },
 ];
 
