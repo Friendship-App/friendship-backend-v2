@@ -5,10 +5,14 @@ export const dbGetUserChatroom = (userId, participantId) => {
     const chatroom = await trx
       .raw(
         `
-      select "chatroomId" from user_chatroom where "participantId" = ?
-      intersect
-      select "chatroomId" from user_chatroom where "participantId" = ?
-    `,
+            select "chatroomId"
+            from user_chatroom
+            where "participantId" = ?
+            intersect
+            select "chatroomId"
+            from user_chatroom
+            where "participantId" = ?
+        `,
         [userId, participantId],
       )
       .then(data => data.rows);
@@ -17,12 +21,14 @@ export const dbGetUserChatroom = (userId, participantId) => {
       let i = 0;
       while (i < chatroom.length) {
         const isEventChatroom = await trx
-          .select()
+          .select('*')
           .from('events')
-          .where({ chatroomId: chatroom[i].id });
+          .where({ chatroomId: chatroom[i].chatroomId });
+
         if (isEventChatroom.length === 0) {
           return [chatroom[i]];
         }
+        console.log(i);
         i++;
       }
     }
