@@ -74,21 +74,9 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
           );
         }
 
-        usersWithSameLocations.sort((a, b) => {
-          let comp = 0;
-          if (a.lovecommon > b.lovecommon) {
-            comp = -1;
-          } else if (a.lovecommon < b.lovecommon) {
-            comp = 1;
-          } else {
-            if (a.hatecommon > b.hatecommon) {
-              comp = -1;
-            } else if (a.hatecommon < b.hatecommon) {
-              comp = 1;
-            }
-          }
-          return comp;
-        });
+        usersWithSameLocations.sort(
+          (a, b) => b.lovecommon + b.hatecommon - (a.lovecommon + a.hatecommon),
+        );
 
         return usersWithSameLocations.slice(0, pageLimit);
       });

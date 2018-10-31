@@ -113,7 +113,7 @@ export const dbGetEvents = async userId => {
         .groupBy('events.id');
     }, true)
     .as('allEvents')
-    .orderByRaw('participants DESC, date, loveCommon DESC, hateCommon DESC')
+    .orderByRaw('date, participants DESC, loveCommon DESC, hateCommon DESC')
     .then(async data => {
       for (let i = 0; i < data.length; i++) {
         await knex
