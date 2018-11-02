@@ -15,6 +15,7 @@ import adminTags from './admin/tags';
 import adminEvents from './admin/events';
 import adminMetrics from './admin/metrics';
 import adminTos from './admin/tos';
+import feedback from './feedback';
 
 const routes = [].concat(
   avatars,
@@ -27,6 +28,7 @@ const routes = [].concat(
   users,
   chatrooms,
   events,
+  feedback,
   aws,
   adminLogin,
   adminUsers,
