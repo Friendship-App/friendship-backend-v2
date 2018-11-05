@@ -4,6 +4,7 @@ import { getEndpointDescription } from '../../utils/endpointDescriptionGenerator
 import {
   banUser,
   deleteUser,
+  editUser,
   getUser,
   getUsers,
   toggleAccountActivation,
@@ -29,6 +30,16 @@ const users = [
       getEndpointDescription('Update user enabled', 'users'),
     ),
     handler: toggleAccountActivation,
+  },
+  {
+    method: 'PATCH',
+    path: '/api/admin/users/edit/{userId}',
+    config: merge(
+      {},
+      getAuthWithScope('admin'),
+      getEndpointDescription('Update user settings', 'users'),
+    ),
+    handler: editUser,
   },
   {
     method: 'GET',
