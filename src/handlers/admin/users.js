@@ -1,5 +1,6 @@
 import {
   dbDeleteUser,
+  dbEditUser,
   dbGetUser,
   dbGetUsers,
   dbToggleAccountActivation,
@@ -18,6 +19,12 @@ export const toggleAccountActivation = (request, reply) => {
     request.params.userId,
     request.payload.toggleTo,
   ).then(data => reply.response(data));
+};
+
+export const editUser = (request, reply) => {
+  return dbEditUser(request.params.userId, request.payload).then(data =>
+    reply.response(data),
+  );
 };
 
 export const deleteUser = (request, reply) => {

@@ -1,4 +1,5 @@
 import knex from '../../utils/knex';
+import { hashPassword } from '../../handlers/register';
 
 const userListFields = [
   'users.id',
@@ -60,6 +61,30 @@ export const dbToggleAccountActivation = (userId, toggleTo) => {
     .update({ active: toggleTo })
     .from('users')
     .where({ id: userId });
+};
+
+export const dbEditUser = (userId, payload) => {
+  const { username, email, password } = payload;
+  console.log(username, email, password);
+  return knex.transaction(async trx => {
+    if (username || email) {
+      await trx
+        .update({ username, email })
+        .from('users')
+        .where({ id: userId })
+        .returning('*')
+        .then(users => users[0])
+        .then(user => user);
+    }
+
+    if (password) {
+      const hashedPassword = await hashPassword(password);
+      await trx
+        .update({ password: hashedPassword })
+        .from('secrets')
+        .where({ ownerId: userId });
+    }
+  });
 };
 
 export const dbDeleteUser = userId => {
