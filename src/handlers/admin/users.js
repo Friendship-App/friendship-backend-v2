@@ -1,11 +1,16 @@
 import {
   dbDeleteUser,
+  dbGetUser,
   dbGetUsers,
   dbToggleAccountActivation,
 } from '../../models/admin/users';
 
 export const getUsers = (request, reply) => {
   return dbGetUsers(request.query.username).then(data => reply.response(data));
+};
+
+export const getUser = (request, reply) => {
+  return dbGetUser(request.params.userId).then(data => reply.response(data));
 };
 
 export const toggleAccountActivation = (request, reply) => {

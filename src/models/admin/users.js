@@ -30,6 +30,31 @@ export const dbGetUsers = username => {
     .orderBy('users.id', 'asc');
 };
 
+export const dbGetUser = userId => {
+  return knex.transaction(async trx => {
+    return trx('users')
+      .leftJoin('banned_users', 'banned_users.userId', 'users.id')
+      .leftJoin('reports', 'reports.userId', 'users.id')
+      .select(userListFields)
+      .count('banned_users.id as isbanned')
+      .where('users.id', userId)
+      .whereNot('users.scope', 'admin')
+      .whereNot('users.email', null)
+      .groupBy('users.id')
+      .orderBy('users.id', 'asc')
+      .then(users => users[0])
+      .then(user =>
+        trx('reports')
+          .select('reports.*')
+          .where('reports.userId', user.id)
+          .then(reports => {
+            user.reports = reports;
+            return user;
+          }),
+      );
+  });
+};
+
 export const dbToggleAccountActivation = (userId, toggleTo) => {
   return knex
     .update({ active: toggleTo })
