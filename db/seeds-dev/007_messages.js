@@ -5,6 +5,7 @@ const momentRandom = require('moment-random');
 
 exports.seed = knex =>
   knex('messages')
+    .del()
     .then(() => knex('chatrooms').select())
     .then(chatrooms => {
       const messages = [];
