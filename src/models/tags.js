@@ -9,7 +9,7 @@ export const dbGetActivities = () =>
     .from('tags')
     .where('category', 1);
 
-export function getUserLove(userId) {
+function getUserLove(userId) {
   return knex('user_tag')
     .where('userId', userId)
     .andWhere('love', true)
@@ -19,7 +19,7 @@ export function getUserLove(userId) {
     });
 }
 
-export function getUserHate(userId) {
+function getUserHate(userId) {
   return knex('user_tag')
     .where('userId', userId)
     .andWhere('love', false)
@@ -67,6 +67,12 @@ export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
 
 export const dbRegisterTags = userTags =>
   knex.insert(userTags).into('user_tag');
+
+export function getUserTags(userId) {
+  return knex('user_tag')
+    .select('tagId', 'love')
+    .where('userId', userId);
+}
 
 function getTagInCommon(tags = [], idOfUserAskedFor, love) {
   return knex
