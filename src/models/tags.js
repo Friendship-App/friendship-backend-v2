@@ -1,5 +1,5 @@
 import knex from '../utils/knex';
-import { merge } from 'lodash';
+import { merge, isEmpty, find, filter } from 'lodash';
 
 export const dbGetTags = () => knex.select().from('tags');
 
@@ -9,26 +9,6 @@ export const dbGetActivities = () =>
     .from('tags')
     .where('category', 1);
 
-function getUserLove(userId) {
-  return knex('user_tag')
-    .where('userId', userId)
-    .andWhere('love', true)
-    .select(knex.raw('array_agg(DISTINCT "tagId") as tagsArray'))
-    .then(res => {
-      return res[0].tagsarray;
-    });
-}
-
-function getUserHate(userId) {
-  return knex('user_tag')
-    .where('userId', userId)
-    .andWhere('love', false)
-    .select(knex.raw('array_agg(DISTINCT "tagId") as tagsArray'))
-    .then(res => {
-      return res[0].tagsarray;
-    });
-}
-
 function getTagsDetails(tags = []) {
   return knex
     .select()
@@ -36,31 +16,41 @@ function getTagsDetails(tags = []) {
     .whereIn('id', tags);
 }
 
+const getUserTagsByAnswer = (userTags, love) =>
+  userTags.filter(tag => tag.love === love).map(({ tagId }) => tagId);
+
 export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
-  let loveInCommon, hateInCommon;
-  let loveTags = await getUserLove(idOfUserAskedFor);
-  let hateTags = await getUserHate(idOfUserAskedFor);
+  let commonTagPercent;
+  const isLoggedInUser = idOfUserAskedFor == userId;
 
-  if (loveTags) {
-    loveInCommon = await getTagInCommon(loveTags, userId, true);
+  const tagsOfUserAskedFor = await getUserTags(idOfUserAskedFor);
+  let loveTags = getUserTagsByAnswer(tagsOfUserAskedFor, true);
+  let hateTags = getUserTagsByAnswer(tagsOfUserAskedFor, false);
+
+  if (!isLoggedInUser) {
+    const userTags = await getUserTags(userId);
+
+    const commonTags = userTags.filter(userTag =>
+      find(tagsOfUserAskedFor, ({ tagId }) => tagId === userTag.tagId),
+    );
+
+    const tagsWithSameAnswer = commonTags.filter(commonTag =>
+      find(tagsOfUserAskedFor, commonTag),
+    );
+    commonTagPercent = tagsWithSameAnswer.length
+      ? Math.round((tagsWithSameAnswer.length / commonTags.length) * 100)
+      : 0;
+  }
+
+  if (!isEmpty(loveTags)) {
     loveTags = await getTagsDetails(loveTags);
-  } else {
-    loveInCommon = 0;
-    loveTags = [];
   }
 
-  if (hateTags) {
-    hateInCommon = await getTagInCommon(hateTags, userId, false);
+  if (!isEmpty(hateTags)) {
     hateTags = await getTagsDetails(hateTags);
-  } else {
-    hateInCommon = 0;
-    hateTags = [];
   }
 
-  const userTags = merge(
-    {},
-    { loveTags, hateTags, loveInCommon, hateInCommon },
-  );
+  const userTags = merge({}, { loveTags, hateTags, commonTagPercent });
 
   return userTags;
 };
