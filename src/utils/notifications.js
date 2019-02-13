@@ -1,31 +1,40 @@
 import Expo from 'expo-server-sdk';
 
 export const notifyEventCancelled = (participantsTokens, event) => {
+  sendPushNotifications(
+    participantsTokens,
+    `${event.title} that you joined has been cancelled !`,
+  );
+};
+
+const sendPushNotifications = (
+  notificationTokens,
+  message,
+  sound = 'default',
+) => {
   // Create a new Expo SDK client
   let expo = new Expo();
 
   // Create the messages that you want to send to clents
   let messages = [];
-  for (let participant of participantsTokens) {
+  for (let { notificationToken } of notificationTokens) {
     // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
 
     // Check that all your push tokens appear to be valid Expo push tokens
-    if (!Expo.isExpoPushToken(participant.notificationToken)) {
+    if (!Expo.isExpoPushToken(notificationToken)) {
       console.error(
-        `Push token ${
-          participant.notificationToken
-        } is not a valid Expo push token`,
+        `Push token ${notificationToken} is not a valid Expo push token`,
       );
       continue;
     } else {
-      console.log(participant.notificationToken);
+      console.log(notificationToken);
     }
 
     // Construct a message (see https://docs.expo.io/versions/latest/guides/push-notifications.html)
     messages.push({
-      to: participant.notificationToken,
-      sound: 'default',
-      body: `${event.title} that you joined has been cancelled !`,
+      to: notificationToken,
+      sound,
+      body: message,
     });
   }
 
