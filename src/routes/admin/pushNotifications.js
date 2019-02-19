@@ -1,7 +1,10 @@
 import { merge } from 'lodash';
 import { getEndpointDescription } from '../../utils/endpointDescriptionGenerator';
 import { getAuthWithScope } from '../../utils/auth';
-import { createPushNotification } from '../../handlers/admin/pushNotifications';
+import {
+  createPushNotification,
+  getPushNotifications,
+} from '../../handlers/admin/pushNotifications';
 
 const pushNotifications = [
   {
@@ -16,6 +19,16 @@ const pushNotifications = [
       ),
     ),
     handler: createPushNotification,
+  },
+  {
+    method: 'GET',
+    path: '/api/admin/pushNotifications',
+    config: merge(
+      {},
+      getAuthWithScope('admin'),
+      getEndpointDescription('Get all push notifications', 'pushNotifications'),
+    ),
+    handler: getPushNotifications,
   },
 ];
 
