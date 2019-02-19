@@ -17,6 +17,7 @@ import adminEvents from './admin/events';
 import adminMetrics from './admin/metrics';
 import adminTos from './admin/tos';
 import adminFeedback from './admin/feedback';
+import adminPushNotifications from './admin/pushNotifications';
 
 const routes = [].concat(
   avatars,
@@ -38,6 +39,7 @@ const routes = [].concat(
   adminMetrics,
   adminTos,
   adminFeedback,
+  adminPushNotifications,
 );
 
 export default routes;
