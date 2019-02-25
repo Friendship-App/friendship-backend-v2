@@ -7,14 +7,15 @@ import { dbGetAllNotificationTokens } from '../../models/admin/users';
 
 export const createPushNotification = async function(request) {
   const notificationTokens = await dbGetAllNotificationTokens();
-  const { notification } = request.payload;
+  const { message, title } = request.payload;
 
-  sendPushNotifications(notificationTokens, notification);
+  sendPushNotifications(notificationTokens, message, title);
 
   return dbCreatPushNotification({
     time: new Date(),
     senderId: request.pre.user.id,
-    notification,
+    message,
+    title,
   });
 };
 

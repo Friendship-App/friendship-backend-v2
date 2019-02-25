@@ -10,6 +10,7 @@ export const notifyEventCancelled = (participantsTokens, event) => {
 export const sendPushNotifications = (
   notificationTokens,
   message,
+  title,
   sound = 'default',
 ) => {
   // Create a new Expo SDK client
@@ -34,6 +35,7 @@ export const sendPushNotifications = (
     messages.push({
       to: notificationToken,
       sound,
+      title,
       body: message,
     });
   }

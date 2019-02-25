@@ -8,7 +8,8 @@ export const dbGetPushNotifications = () => {
   return knex('push_notifications')
     .select([
       'push_notifications.id',
-      'push_notifications.notification',
+      'push_notifications.title',
+      'push_notifications.message',
       'push_notifications.time',
       'users.username',
     ])

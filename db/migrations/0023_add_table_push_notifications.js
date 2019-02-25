@@ -7,7 +7,8 @@ exports.up = knex =>
       .increments('id')
       .unique()
       .primary();
-    table.text('notification').notNullable();
+    table.text('title');
+    table.text('message').notNullable();
     table.timestamp('time');
     table
       .integer('senderId')
