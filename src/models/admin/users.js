@@ -133,3 +133,14 @@ export const dbDeleteUser = userId => {
       .where({ id: userId });
   });
 };
+
+export const dbGetAllNotificationTokens = () =>
+  knex('users')
+    .select(['users.notificationToken'])
+    .whereNotExists(
+      knex
+        .select('*')
+        .from('banned_users')
+        .whereRaw('users.id = banned_users."userId"'),
+    )
+    .whereNot('notificationToken', null);

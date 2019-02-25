@@ -7,7 +7,7 @@ export const notifyEventCancelled = (participantsTokens, event) => {
   );
 };
 
-const sendPushNotifications = (
+export const sendPushNotifications = (
   notificationTokens,
   message,
   sound = 'default',
