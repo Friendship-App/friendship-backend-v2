@@ -1,6 +1,6 @@
 import knex from '../utils/knex';
-import { merge, filter, find, orderBy } from 'lodash';
-import { getUserTags } from './tags';
+import { merge, orderBy } from 'lodash';
+import { getUserTags, calcCommonTagPercent } from './tags';
 import { hashPassword } from '../handlers/register';
 import moment from 'moment';
 
@@ -86,12 +86,8 @@ const getCommonTagPercent = async (
     .select('tagId', 'love')
     .where(trx.raw(`"tagId" IN (${userTagIds})`))
     .andWhere('userId', userWithSameLocationId);
-  const tagsWithSameAnswer = filter(commonTags, commonTag =>
-    find(userTags, commonTag),
-  );
-  return tagsWithSameAnswer.length
-    ? Math.round((tagsWithSameAnswer.length / commonTags.length) * 100)
-    : 0;
+
+  return calcCommonTagPercent(commonTags, userTags);
 };
 
 export const dbUserIsBanned = user => {

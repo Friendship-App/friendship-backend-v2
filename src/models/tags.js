@@ -19,6 +19,15 @@ function getTagsDetails(tags = []) {
 const getUserTagsByAnswer = (userTags, love) =>
   userTags.filter(tag => tag.love === love).map(({ tagId }) => tagId);
 
+export const calcCommonTagPercent = (commonTags, userTags) => {
+  const tagsWithSameAnswer = commonTags.filter(commonTag =>
+    find(userTags, commonTag),
+  );
+  return tagsWithSameAnswer.length
+    ? Math.round((tagsWithSameAnswer.length / commonTags.length) * 100)
+    : 0;
+};
+
 export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
   let commonTagPercent;
   const isLoggedInUser = idOfUserAskedFor == userId;
@@ -34,12 +43,7 @@ export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
       find(tagsOfUserAskedFor, ({ tagId }) => tagId === userTag.tagId),
     );
 
-    const tagsWithSameAnswer = commonTags.filter(commonTag =>
-      find(tagsOfUserAskedFor, commonTag),
-    );
-    commonTagPercent = tagsWithSameAnswer.length
-      ? Math.round((tagsWithSameAnswer.length / commonTags.length) * 100)
-      : 0;
+    commonTagPercent = calcCommonTagPercent(commonTags, tagsOfUserAskedFor);
   }
 
   if (!isEmpty(loveTags)) {
