@@ -1,5 +1,5 @@
 import knex from '../utils/knex';
-import { merge, isEmpty, find, filter } from 'lodash';
+import { merge, isEmpty, find } from 'lodash';
 
 export const dbGetTags = () => knex.select().from('tags');
 
