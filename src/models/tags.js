@@ -62,16 +62,6 @@ export function getUserTags(userId) {
     .where('userId', userId);
 }
 
-function getTagInCommon(tags = [], idOfUserAskedFor, love) {
-  return knex
-    .count()
-    .from('user_tag')
-    .whereIn('tagId', tags)
-    .andWhere('userId', idOfUserAskedFor)
-    .andWhere('love', love)
-    .then(data => data[0].count);
-}
-
 export const dbUpdateUserTags = (lovedTags, hatedTags, userId) =>
   knex.transaction(async trx => {
     console.log(lovedTags);
