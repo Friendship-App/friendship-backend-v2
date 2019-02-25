@@ -1,5 +1,5 @@
 import knex from '../utils/knex';
-import { merge, isEmpty, find } from 'lodash';
+import { isEmpty, find } from 'lodash';
 
 export const dbGetTags = () => knex.select().from('tags');
 
@@ -50,9 +50,7 @@ export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
     hateTags = await getTagsDetails(hateTags);
   }
 
-  const userTags = merge({}, { loveTags, hateTags, commonTagPercent });
-
-  return userTags;
+  return { loveTags, hateTags, commonTagPercent };
 };
 
 export const dbRegisterTags = userTags =>
