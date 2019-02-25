@@ -37,12 +37,11 @@ export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
   let hateTags = getUserTagsByAnswer(tagsOfUserAskedFor, false);
 
   if (!isLoggedInUser) {
+    // Fetch logged in user's tags so we can calculate common tag percent
     const userTags = await getUserTags(userId);
-
     const commonTags = userTags.filter(userTag =>
       find(tagsOfUserAskedFor, ({ tagId }) => tagId === userTag.tagId),
     );
-
     commonTagPercent = calcCommonTagPercent(commonTags, tagsOfUserAskedFor);
   }
 
