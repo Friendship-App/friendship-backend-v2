@@ -1,5 +1,5 @@
 import knex from '../utils/knex';
-import { merge } from 'lodash';
+import { isEmpty, find } from 'lodash';
 
 export const dbGetTags = () => knex.select().from('tags');
 
@@ -9,26 +9,6 @@ export const dbGetActivities = () =>
     .from('tags')
     .where('category', 1);
 
-export function getUserLove(userId) {
-  return knex('user_tag')
-    .where('userId', userId)
-    .andWhere('love', true)
-    .select(knex.raw('array_agg(DISTINCT "tagId") as tagsArray'))
-    .then(res => {
-      return res[0].tagsarray;
-    });
-}
-
-export function getUserHate(userId) {
-  return knex('user_tag')
-    .where('userId', userId)
-    .andWhere('love', false)
-    .select(knex.raw('array_agg(DISTINCT "tagId") as tagsArray'))
-    .then(res => {
-      return res[0].tagsarray;
-    });
-}
-
 function getTagsDetails(tags = []) {
   return knex
     .select()
@@ -36,46 +16,53 @@ function getTagsDetails(tags = []) {
     .whereIn('id', tags);
 }
 
-export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
-  let loveInCommon, hateInCommon;
-  let loveTags = await getUserLove(idOfUserAskedFor);
-  let hateTags = await getUserHate(idOfUserAskedFor);
+const getUserTagsByAnswer = (userTags, love) =>
+  userTags.filter(tag => tag.love === love).map(({ tagId }) => tagId);
 
-  if (loveTags) {
-    loveInCommon = await getTagInCommon(loveTags, userId, true);
-    loveTags = await getTagsDetails(loveTags);
-  } else {
-    loveInCommon = 0;
-    loveTags = [];
-  }
-
-  if (hateTags) {
-    hateInCommon = await getTagInCommon(hateTags, userId, false);
-    hateTags = await getTagsDetails(hateTags);
-  } else {
-    hateInCommon = 0;
-    hateTags = [];
-  }
-
-  const userTags = merge(
-    {},
-    { loveTags, hateTags, loveInCommon, hateInCommon },
+export const calcCommonTagPercent = (commonTags, userTags) => {
+  const tagsWithSameAnswer = commonTags.filter(commonTag =>
+    find(userTags, commonTag),
   );
+  return tagsWithSameAnswer.length
+    ? Math.round((tagsWithSameAnswer.length / commonTags.length) * 100)
+    : 0;
+};
 
-  return userTags;
+export const dbGetUserTags = async (idOfUserAskedFor, userId) => {
+  let commonTagPercent;
+  const isLoggedInUser = idOfUserAskedFor == userId;
+
+  const tagsOfUserAskedFor = await getUserTags(idOfUserAskedFor);
+  let loveTags = getUserTagsByAnswer(tagsOfUserAskedFor, true);
+  let hateTags = getUserTagsByAnswer(tagsOfUserAskedFor, false);
+
+  if (!isLoggedInUser) {
+    // Fetch logged in user's tags so we can calculate common tag percent
+    const userTags = await getUserTags(userId);
+    const commonTags = userTags.filter(userTag =>
+      find(tagsOfUserAskedFor, ({ tagId }) => tagId === userTag.tagId),
+    );
+    commonTagPercent = calcCommonTagPercent(commonTags, tagsOfUserAskedFor);
+  }
+
+  if (!isEmpty(loveTags)) {
+    loveTags = await getTagsDetails(loveTags);
+  }
+
+  if (!isEmpty(hateTags)) {
+    hateTags = await getTagsDetails(hateTags);
+  }
+
+  return { loveTags, hateTags, commonTagPercent };
 };
 
 export const dbRegisterTags = userTags =>
   knex.insert(userTags).into('user_tag');
 
-function getTagInCommon(tags = [], idOfUserAskedFor, love) {
-  return knex
-    .count()
-    .from('user_tag')
-    .whereIn('tagId', tags)
-    .andWhere('userId', idOfUserAskedFor)
-    .andWhere('love', love)
-    .then(data => data[0].count);
+export function getUserTags(userId) {
+  return knex('user_tag')
+    .select('tagId', 'love')
+    .where('userId', userId);
 }
 
 export const dbUpdateUserTags = (lovedTags, hatedTags, userId) =>
