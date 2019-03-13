@@ -7,6 +7,17 @@ export const notifyEventCancelled = (participantsTokens, event) => {
   );
 };
 
+export const notifyReveiceNewMessage = ({
+  notificationTokens,
+  senderName,
+  eventTitle,
+}) => {
+  const message = eventTitle
+    ? `New message in ${eventTitle} from ${senderName}`
+    : `New message from ${senderName}`;
+  sendPushNotifications(notificationTokens, message);
+};
+
 export const sendPushNotifications = (
   notificationTokens,
   message,
