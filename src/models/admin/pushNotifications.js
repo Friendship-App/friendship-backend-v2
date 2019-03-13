@@ -1,6 +1,6 @@
 import knex from '../../utils/knex';
 
-export const dbCreatPushNotification = fields => {
+export const dbCreatePushNotification = fields => {
   return knex('push_notifications').insert(fields);
 };
 

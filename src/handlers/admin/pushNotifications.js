@@ -1,5 +1,5 @@
 import {
-  dbCreatPushNotification,
+  dbCreatePushNotification,
   dbGetPushNotifications,
 } from '../../models/admin/pushNotifications';
 import { sendPushNotifications } from '../../utils/notifications';
@@ -11,7 +11,7 @@ export const createPushNotification = async function(request) {
 
   sendPushNotifications(notificationTokens, message, title);
 
-  return dbCreatPushNotification({
+  return dbCreatePushNotification({
     time: new Date(),
     senderId: request.pre.user.id,
     message,
