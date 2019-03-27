@@ -1,6 +1,6 @@
 import knex from '../utils/knex';
 import { merge } from 'lodash';
-import { getUserHate, getUserLove } from './tags';
+import { getUserHate, getUserLove, dbHasUnseenTags } from './tags';
 import { hashPassword } from '../handlers/register';
 import moment from 'moment';
 
@@ -114,7 +114,7 @@ function getGendersName(genders) {
     .then(data => data[0].genders);
 }
 
-export const dbGetUserInformation = async idOfUserAskedFor => {
+export const dbGetUserInformation = async (idOfUserAskedFor, isOwnProfile) => {
   let locations = await getUserLocations(idOfUserAskedFor);
   let genders = await getUserGenders(idOfUserAskedFor);
 
@@ -127,6 +127,10 @@ export const dbGetUserInformation = async idOfUserAskedFor => {
     .where('id', idOfUserAskedFor);
   let userDetails = data[0];
   userDetails = merge(userDetails, { locations }, { genders });
+
+  if (isOwnProfile) {
+    userDetails.hasUnseenTags = await dbHasUnseenTags(idOfUserAskedFor);
+  }
 
   return userDetails;
 };

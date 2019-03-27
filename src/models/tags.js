@@ -96,3 +96,9 @@ export const dbUpdateUserTags = (lovedTags, hatedTags, userId) =>
       .into('user_tag')
       .returning('*');
   });
+
+export const dbHasUnseenTags = userId =>
+  knex('unseen_tags')
+    .countDistinct('userId')
+    .where({ userId })
+    .then(res => res[0].count > 0);

@@ -15,7 +15,8 @@ export const getBatchUsers = (request, reply) => {
 };
 
 export const getUserInformation = (request, reply) => {
-  return dbGetUserInformation(request.query.userId).then(data =>
+  const isOwnProfile = request.pre.user.id.toString() === request.query.userId;
+  return dbGetUserInformation(request.query.userId, isOwnProfile).then(data =>
     reply.response(data),
   );
 };
