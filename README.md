@@ -19,3 +19,13 @@ export AWS_SECRET_ACCESS_KEY=secret_accesskey
 export DATABASE_URL='postgres://user:password@host:port/databasename'
 npm run watch
 ```
+
+### About migrations
+
+The migrations that start with `00` are legacy and have to be kept with those names because they exist in production. Create any new migrations with
+
+```
+npx knex migrate:make <name-of-migration>
+```
+
+These will be conveniently after the `00` ones and of course themselves are internally in order thanks to knex naming them after timestamps.
