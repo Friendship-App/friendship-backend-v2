@@ -37,6 +37,6 @@ exports.up = knex =>
     );
 
 exports.down = knex =>
-  knex.schema.table
-    .dropTableIfExists('personalities')
-    .table.dropTableIfExists('user_personality');
+  knex.schema
+    .dropTableIfExists('user_personality')
+    .dropTableIfExists('personalities');

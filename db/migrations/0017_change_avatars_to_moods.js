@@ -97,4 +97,4 @@ exports.up = knex =>
       }),
     );
 
-exports.down = knex => knex.schema.table.dropTableIfExists('moods');
+exports.down = knex => knex.schema.dropTableIfExists('moods');

@@ -11,4 +11,10 @@ exports.up = knex => {
   });
 };
 
-exports.down = knex => knex.schema.table.dropTableIfExists('users');
+exports.down = knex =>
+  knex.schema.alterTable('users', t =>
+    t
+      .boolean('active')
+      .defaultTo(false)
+      .alter(),
+  );

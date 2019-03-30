@@ -20,4 +20,4 @@ exports.up = knex =>
     table.timestamp('createdAt').notNullable();
   });
 
-exports.down = knex => knex.schema.table.dropTableIfExists('feedbacks');
+exports.down = knex => knex.schema.dropTableIfExists('feedbacks');

@@ -15,4 +15,4 @@ exports.up = knex =>
       .onDelete('SET NULL');
   });
 
-exports.down = knex => knex.schema.table.dropTableIfExists('event_reports');
+exports.down = knex => knex.schema.dropTableIfExists('event_reports');

@@ -15,5 +15,4 @@ exports.up = knex =>
 /**
  * Delete the email verification table
  */
-exports.down = knex =>
-  knex.schema.table.dropTableIfExists('email_verification');
+exports.down = knex => knex.schema.dropTableIfExists('email_verification');

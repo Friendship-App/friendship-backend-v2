@@ -19,5 +19,4 @@ exports.up = knex =>
 /**
  * Delete the push notifications table
  */
-exports.down = knex =>
-  knex.schema.table.dropTableIfExists('push_notifications');
+exports.down = knex => knex.schema.dropTableIfExists('push_notifications');
