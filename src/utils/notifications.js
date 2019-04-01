@@ -18,9 +18,10 @@ export const notifyReveiceNewMessage = ({
   sendPushNotifications(notificationTokens, message);
 };
 
-const sendPushNotifications = (
+export const sendPushNotifications = (
   notificationTokens,
   message,
+  title,
   sound = 'default',
 ) => {
   // Create a new Expo SDK client
@@ -45,6 +46,7 @@ const sendPushNotifications = (
     messages.push({
       to: notificationToken,
       sound,
+      title,
       body: message,
     });
   }
