@@ -9,12 +9,15 @@ import login from './login';
 import chatrooms from './chatrooms';
 import events from './events';
 import aws from './aws';
+import feedback from './feedback';
 import adminLogin from './admin/login';
 import adminUsers from './admin/users';
 import adminTags from './admin/tags';
 import adminEvents from './admin/events';
 import adminMetrics from './admin/metrics';
 import adminTos from './admin/tos';
+import adminFeedback from './admin/feedback';
+import adminPushNotifications from './admin/pushNotifications';
 
 const routes = [].concat(
   avatars,
@@ -27,6 +30,7 @@ const routes = [].concat(
   users,
   chatrooms,
   events,
+  feedback,
   aws,
   adminLogin,
   adminUsers,
@@ -34,6 +38,8 @@ const routes = [].concat(
   adminEvents,
   adminMetrics,
   adminTos,
+  adminFeedback,
+  adminPushNotifications,
 );
 
 export default routes;

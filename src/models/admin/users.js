@@ -1,4 +1,5 @@
 import knex from '../../utils/knex';
+import { hashPassword } from '../../handlers/register';
 
 const userListFields = [
   'users.id',
@@ -30,11 +31,60 @@ export const dbGetUsers = username => {
     .orderBy('users.id', 'asc');
 };
 
+export const dbGetUser = userId => {
+  return knex.transaction(async trx => {
+    return trx('users')
+      .leftJoin('banned_users', 'banned_users.userId', 'users.id')
+      .leftJoin('reports', 'reports.userId', 'users.id')
+      .select(userListFields)
+      .count('banned_users.id as isbanned')
+      .where('users.id', userId)
+      .whereNot('users.scope', 'admin')
+      .whereNot('users.email', null)
+      .groupBy('users.id')
+      .orderBy('users.id', 'asc')
+      .then(users => users[0])
+      .then(user =>
+        trx('reports')
+          .select('reports.*')
+          .where('reports.userId', user.id)
+          .then(reports => {
+            user.reports = reports;
+            return user;
+          }),
+      );
+  });
+};
+
 export const dbToggleAccountActivation = (userId, toggleTo) => {
   return knex
     .update({ active: toggleTo })
     .from('users')
     .where({ id: userId });
+};
+
+export const dbEditUser = (userId, payload) => {
+  const { username, email, password } = payload;
+  console.log(username, email, password);
+  return knex.transaction(async trx => {
+    if (username || email) {
+      await trx
+        .update({ username, email })
+        .from('users')
+        .where({ id: userId })
+        .returning('*')
+        .then(users => users[0])
+        .then(user => user);
+    }
+
+    if (password) {
+      const hashedPassword = await hashPassword(password);
+      await trx
+        .update({ password: hashedPassword })
+        .from('secrets')
+        .where({ ownerId: userId });
+    }
+  });
 };
 
 export const dbDeleteUser = userId => {
@@ -87,3 +137,14 @@ export const dbDeleteUser = userId => {
       .where({ id: userId });
   });
 };
+
+export const dbGetAllNotificationTokens = () =>
+  knex('users')
+    .select(['users.notificationToken'])
+    .whereNotExists(
+      knex
+        .select('*')
+        .from('banned_users')
+        .whereRaw('users.id = banned_users."userId"'),
+    )
+    .whereNot('notificationToken', null);

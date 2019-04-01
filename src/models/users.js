@@ -1,6 +1,11 @@
 import knex from '../utils/knex';
-import { merge } from 'lodash';
-import { getUserHate, getUserLove, dbHasUnseenTags } from './tags';
+import { merge, orderBy } from 'lodash';
+import {
+  getUserHate,
+  getUserLove,
+  dbHasUnseenTags,
+  calcCommonTagPercent,
+} from './tags';
 import { hashPassword } from '../handlers/register';
 import moment from 'moment';
 
@@ -33,10 +38,9 @@ function getUserLocations(userId) {
 export const dbGetUsersBatch = async (pageNumber, userId) => {
   const pageLimit = 10 * (pageNumber + 1);
 
-  const loveTags = await getUserLove(userId);
-  const hateTags = await getUserHate(userId);
   const userLocations = await getUserLocations(userId);
-
+  const userTags = await getUserTags(userId);
+  const userTagIds = userTags.map(({ tagId }) => tagId);
   const usersAlreadyFetchedId = [userId];
 
   return knex.transaction(async trx => {
@@ -56,31 +60,39 @@ export const dbGetUsersBatch = async (pageNumber, userId) => {
       .groupBy('users.id')
       .then(async usersWithSameLocations => {
         for (let i = 0; i < usersWithSameLocations.length; i++) {
-          let loveCommon = await trx('user_tag')
-            .select(trx.raw('count(DISTINCT "tagId") AS loveCommon'))
-            .where(trx.raw(`"tagId" IN (${loveTags}) AND "love" = true`))
-            .andWhere('userId', usersWithSameLocations[i].id);
-
-          let hateCommon = await trx('user_tag')
-            .select(trx.raw('count(DISTINCT "tagId") AS hateCommon'))
-            .where(trx.raw(`"tagId" IN (${hateTags}) AND "love" = false`))
-            .andWhere('userId', usersWithSameLocations[i].id);
-
-          usersWithSameLocations[i]['lovecommon'] = parseInt(
-            loveCommon[0].lovecommon,
-          );
-          usersWithSameLocations[i]['hatecommon'] = parseInt(
-            hateCommon[0].hatecommon,
+          const userWithSameLocationId = usersWithSameLocations[i].id;
+          usersWithSameLocations[i][
+            'commonTagPercent'
+          ] = await getCommonTagPercent(
+            trx,
+            userWithSameLocationId,
+            userTagIds,
+            userTags,
           );
         }
 
-        usersWithSameLocations.sort(
-          (a, b) => b.lovecommon + b.hatecommon - (a.lovecommon + a.hatecommon),
+        usersWithSameLocations = orderBy(
+          usersWithSameLocations,
+          ['commonTagPercent'],
+          ['desc'],
         );
-
         return usersWithSameLocations.slice(0, pageLimit);
       });
   });
+};
+
+const getCommonTagPercent = async (
+  trx,
+  userWithSameLocationId,
+  userTagIds,
+  userTags,
+) => {
+  const commonTags = await trx('user_tag')
+    .select('tagId', 'love')
+    .where(trx.raw(`"tagId" IN (${userTagIds})`))
+    .andWhere('userId', userWithSameLocationId);
+
+  return calcCommonTagPercent(commonTags, userTags);
 };
 
 export const dbUserIsBanned = user => {
