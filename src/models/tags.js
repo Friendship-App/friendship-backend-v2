@@ -3,6 +3,17 @@ import { merge } from 'lodash';
 
 export const dbGetTags = () => knex.select().from('tags');
 
+export const dbGetTagsWithUnseenFlag = userId =>
+  knex('tags as t')
+    .joinRaw(
+      `left join unseen_tags AS ut on t.id = ut."tagId" and ut."userId" = ${userId}`,
+    )
+    .select(
+      knex.raw(
+        't.*, CASE WHEN ut."userId" IS NULL THEN false ELSE true END as unseen',
+      ),
+    );
+
 export const dbGetActivities = () =>
   knex
     .select()

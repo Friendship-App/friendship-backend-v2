@@ -3,10 +3,16 @@ import {
   dbGetUserTags,
   dbRegisterTags,
   dbUpdateUserTags,
+  dbGetTagsWithUnseenFlag,
 } from '../models/tags';
 
 export const getTags = (request, reply) =>
   dbGetTags().then(data => reply.response(data));
+
+export const getTagsWithUnseenFlag = (request, reply) =>
+  dbGetTagsWithUnseenFlag(request.pre.user.id).then(data =>
+    reply.response(data),
+  );
 
 export const getUserTags = (request, reply) =>
   dbGetUserTags(request.query.userId, request.pre.user.id).then(data =>
