@@ -14,6 +14,12 @@ export const dbGetTagsWithUnseenFlag = userId =>
       ),
     );
 
+export const dbUserSeenTags = userId =>
+  knex
+    .del()
+    .from('unseen_tags')
+    .where({ userId });
+
 export const dbGetActivities = () =>
   knex
     .select()

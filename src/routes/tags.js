@@ -5,6 +5,7 @@ import {
   getUserTags,
   updateUserTags,
   getTagsWithUnseenFlag,
+  userSeenTags,
 } from '../handlers/tags';
 import { getAuthWithScope } from '../utils/auth';
 
@@ -34,6 +35,16 @@ const tags = [
       getEndpointDescription('Get user own tags', 'tags'),
     ),
     handler: getTagsWithUnseenFlag,
+  },
+  {
+    method: 'DELETE',
+    path: '/api/userSeenTags',
+    config: merge(
+      {},
+      getAuthWithScope('user'),
+      getEndpointDescription('Remove unseen tag flags', 'tags'),
+    ),
+    handler: userSeenTags,
   },
   {
     method: 'POST',
