@@ -19,6 +19,7 @@ export const dbAddTag = (newTagData, creatorId) => {
     .insert({
       creatorId,
       name: newTagData.name,
+      type: newTagData.type,
       createdAt: moment(),
     })
     .into('tags')
