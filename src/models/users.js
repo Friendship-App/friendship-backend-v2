@@ -5,6 +5,7 @@ import {
   getUserLove,
   dbHasUnseenTags,
   calcCommonTagPercent,
+  getUserTags,
 } from './tags';
 import { hashPassword } from '../handlers/register';
 import moment from 'moment';
