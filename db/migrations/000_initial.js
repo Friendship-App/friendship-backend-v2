@@ -74,6 +74,6 @@ exports.up = knex =>
 
 exports.down = knex =>
   knex.schema
-    .dropTableIfExists('users')
+    .dropTableIfExists('banned_users')
     .dropTableIfExists('secrets')
-    .dropTableIfExists('banned_users');
+    .dropTableIfExists('users');

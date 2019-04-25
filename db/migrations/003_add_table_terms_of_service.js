@@ -12,4 +12,4 @@ exports.up = knex =>
 /**
  * Delete the terms of service table
  */
-exports.down = knex => knex.schema.table.dropTableIfExists('terms_of_service');
+exports.down = knex => knex.schema.dropTableIfExists('terms_of_service');

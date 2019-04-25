@@ -8,4 +8,5 @@ exports.up = knex => {
   });
 };
 
-exports.down = knex => knex.schema.table.dropTableIfExists('events');
+exports.down = knex =>
+  knex.schema.alterTable('events', t => t.dropColumn('active'));

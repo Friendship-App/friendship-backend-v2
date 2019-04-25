@@ -41,4 +41,6 @@ exports.up = knex =>
 /**
  * Delete the tags table
  */
-exports.down = knex => knex.schema.table.dropTableIfExists('messages');
+exports.down = knex => {
+  return knex.schema.dropTable('unread_messages').dropTableIfExists('messages');
+};

@@ -19,4 +19,4 @@ exports.up = knex =>
       .onDelete('SET NULL');
   });
 
-exports.down = knex => knex.schema.table.dropTableIfExists('reports');
+exports.down = knex => knex.schema.dropTableIfExists('reports');

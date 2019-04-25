@@ -38,6 +38,4 @@ exports.up = knex =>
  * Delete the tags table
  */
 exports.down = knex =>
-  knex.schema.table
-    .dropTableIfExists('tags')
-    .table.dropTableIfExists('user_tag');
+  knex.schema.dropTableIfExists('user_tag').dropTableIfExists('tags');

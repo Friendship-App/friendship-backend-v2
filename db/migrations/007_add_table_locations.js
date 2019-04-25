@@ -30,6 +30,4 @@ exports.up = knex =>
     });
 
 exports.down = knex =>
-  knex.schema.table
-    .dropTableIfExists('locations')
-    .table.dropTableIfExists('user_location');
+  knex.schema.dropTableIfExists('user_location').dropTableIfExists('locations');

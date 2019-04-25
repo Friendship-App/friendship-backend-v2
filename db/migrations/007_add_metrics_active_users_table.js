@@ -5,5 +5,4 @@ exports.up = knex =>
     table.timestamp('timestamp');
   });
 
-exports.down = knex =>
-  knex.schema.table.dropTableIfExists('metrics_active_users');
+exports.down = knex => knex.schema.dropTableIfExists('metrics_active_users');
