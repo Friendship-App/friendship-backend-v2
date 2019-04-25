@@ -1,4 +1,4 @@
-exports.up = knex => {
+exports.up = knex =>
   knex.schema.createTableIfNotExists('unseen_tags', table => {
     table
       .integer('userId')
@@ -14,8 +14,4 @@ exports.up = knex => {
       .onDelete('CASCADE');
     table.primary(['userId', 'tagId']);
   });
-};
-
-exports.down = knex => {
-  knex.schema.table.table.dropTableIfExists('unseen_tags');
-};
+exports.down = knex => knex.schema.table.dropTableIfExists('unseen_tags');
