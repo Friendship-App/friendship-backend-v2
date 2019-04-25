@@ -29,6 +29,4 @@ exports.up = knex =>
  * Delete the genders table
  */
 exports.down = knex =>
-  knex.schema.table
-    .dropTableIfExists('genders')
-    .table.dropTableIfExists('user_gender');
+  knex.schema.dropTableIfExists('user_gender').dropTableIfExists('genders');

@@ -24,6 +24,4 @@ exports.up = knex =>
     });
 
 exports.down = knex =>
-  knex.schema.table
-    .dropTableIfExists('chatrooms')
-    .dropTableIfExists('user_chatroom');
+  knex.schema.dropTableIfExists('user_chatroom').dropTableIfExists('chatrooms');

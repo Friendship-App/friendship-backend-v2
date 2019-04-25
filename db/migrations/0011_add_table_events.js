@@ -44,4 +44,4 @@ exports.up = knex =>
         .onDelete('CASCADE');
     });
 exports.down = knex =>
-  knex.schema.dropTableIfExists('events').dropTableIfExists('user_event');
+  knex.schema.dropTableIfExists('user_event').dropTableIfExists('events');

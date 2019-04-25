@@ -23,6 +23,6 @@ exports.up = knex =>
     });
 
 exports.down = knex =>
-  knex.schema.table
-    .dropTableIfExists('surveyOptions')
-    .table.dropTableIfExists('feedback_surveyOption');
+  knex.schema
+    .dropTableIfExists('feedback_surveyOption')
+    .dropTableIfExists('surveyOptions');

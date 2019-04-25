@@ -6,4 +6,4 @@ exports.up = knex =>
   });
 
 exports.down = knex =>
-  knex.schema.table.dropTableIfExists('metrics_conversations_length');
+  knex.schema.dropTableIfExists('metrics_conversations_length');

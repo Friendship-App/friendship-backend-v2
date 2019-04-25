@@ -49,4 +49,4 @@ exports.up = knex =>
       ]),
     );
 
-exports.down = knex => knex.schema.table.dropTableIfExists('avatars');
+exports.down = knex => knex.schema.dropTableIfExists('avatars');

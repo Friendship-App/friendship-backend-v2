@@ -8,4 +8,10 @@ exports.up = knex => {
   });
 };
 
-exports.down = knex => knex.schema.table.dropTableIfExists('users');
+exports.down = knex =>
+  knex.schema.table('users', t =>
+    t
+      .text('email')
+      .notNullable()
+      .alter(),
+  );
