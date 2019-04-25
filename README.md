@@ -29,3 +29,9 @@ npx knex migrate:make <name-of-migration>
 ```
 
 These will be conveniently after the `00` ones and of course themselves are internally in order thanks to knex naming them after timestamps.
+
+To run migrations in production, do
+
+```
+heroku run knex migrate:latest --knexfile db/knexfile.js
+```
