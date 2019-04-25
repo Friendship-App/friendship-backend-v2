@@ -3,6 +3,7 @@ import {
   dbDeleteTag,
   dbGetTags,
   dbUpdateTag,
+  dbAddUnseenTags,
 } from '../../models/admin/tags';
 
 export const getTags = (request, reply) => {
@@ -14,9 +15,12 @@ export const deleteTag = (request, reply) => {
 };
 
 export const addTag = (request, reply) => {
-  return dbAddTag(request.payload, request.pre.user.id).then(tag =>
-    reply.response(tag),
-  );
+  return dbAddTag(request.payload, request.pre.user.id)
+    .then(async tag => {
+      await dbAddUnseenTags(tag[0].id);
+      return tag;
+    })
+    .then(tag => reply.response(tag));
 };
 
 export const updateTag = (request, reply) => {

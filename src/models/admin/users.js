@@ -113,6 +113,10 @@ export const dbDeleteUser = userId => {
       .del()
       .from('user_location')
       .where({ userId });
+    await trx
+      .del()
+      .from('unseen_tags')
+      .where({ userId });
 
     return trx
       .update({

@@ -1,6 +1,12 @@
 import knex from '../utils/knex';
 import { merge, orderBy } from 'lodash';
-import { getUserTags, calcCommonTagPercent } from './tags';
+import {
+  getUserHate,
+  getUserLove,
+  dbHasUnseenTags,
+  calcCommonTagPercent,
+  getUserTags,
+} from './tags';
 import { hashPassword } from '../handlers/register';
 import moment from 'moment';
 
@@ -84,7 +90,7 @@ const getCommonTagPercent = async (
 ) => {
   const commonTags = await trx('user_tag')
     .select('tagId', 'love')
-    .where(trx.raw(`"tagId" IN (${userTagIds})`))
+    .where(userTagIds.size > 0 ? trx.raw(`"tagId" IN (${userTagIds})`) : false)
     .andWhere('userId', userWithSameLocationId);
 
   return calcCommonTagPercent(commonTags, userTags);
@@ -121,7 +127,7 @@ function getGendersName(genders) {
     .then(data => data[0].genders);
 }
 
-export const dbGetUserInformation = async idOfUserAskedFor => {
+export const dbGetUserInformation = async (idOfUserAskedFor, isOwnProfile) => {
   let locations = await getUserLocations(idOfUserAskedFor);
   let genders = await getUserGenders(idOfUserAskedFor);
 
@@ -134,6 +140,10 @@ export const dbGetUserInformation = async idOfUserAskedFor => {
     .where('id', idOfUserAskedFor);
   let userDetails = data[0];
   userDetails = merge(userDetails, { locations }, { genders });
+
+  if (isOwnProfile) {
+    userDetails.hasUnseenTags = await dbHasUnseenTags(idOfUserAskedFor);
+  }
 
   return userDetails;
 };

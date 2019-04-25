@@ -19,6 +19,7 @@ export const dbAddTag = (newTagData, creatorId) => {
     .insert({
       creatorId,
       name: newTagData.name,
+      type: newTagData.type,
       createdAt: moment(),
     })
     .into('tags')
@@ -31,3 +32,13 @@ export const dbUpdateTag = (tagId, name) => {
     .from('tags')
     .where({ id: tagId });
 };
+
+export const dbAddUnseenTags = tagId =>
+  knex.from('unseen_tags').insert(function() {
+    this.from('users')
+      .select({
+        userId: 'id',
+        tagId,
+      })
+      .where({ active: 'true' });
+  });

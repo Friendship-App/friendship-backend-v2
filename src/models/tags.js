@@ -3,6 +3,23 @@ import { isEmpty, find } from 'lodash';
 
 export const dbGetTags = () => knex.select().from('tags');
 
+export const dbGetTagsWithUnseenFlag = userId =>
+  knex('tags as t')
+    .joinRaw(
+      `left join unseen_tags AS ut on t.id = ut."tagId" and ut."userId" = ${userId}`,
+    )
+    .select(
+      knex.raw(
+        't.*, CASE WHEN ut."userId" IS NULL THEN false ELSE true END as unseen',
+      ),
+    );
+
+export const dbUserSeenTags = userId =>
+  knex
+    .del()
+    .from('unseen_tags')
+    .where({ userId });
+
 export const dbGetActivities = () =>
   knex
     .select()
@@ -83,3 +100,9 @@ export const dbUpdateUserTags = (lovedTags, hatedTags, userId) =>
       .into('user_tag')
       .returning('*');
   });
+
+export const dbHasUnseenTags = userId =>
+  knex('unseen_tags')
+    .countDistinct('userId')
+    .where({ userId })
+    .then(res => res[0].count > 0);
