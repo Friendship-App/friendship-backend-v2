@@ -32,22 +32,6 @@ exports.up = knex =>
         .onDelete('CASCADE');
       table.boolean('love').defaultTo(true);
       table.primary(['userId', 'tagId']);
-    })
-
-    .createTableIfNotExists('unseen_tags', table => {
-      table
-        .integer('userId')
-        .unsigned()
-        .references('id')
-        .inTable('users')
-        .onDelete('CASCADE');
-      table
-        .integer('tagId')
-        .unsigned()
-        .references('id')
-        .inTable('tags')
-        .onDelete('CASCADE');
-      table.primary(['userId', 'tagId']);
     });
 
 /**
@@ -56,5 +40,4 @@ exports.up = knex =>
 exports.down = knex =>
   knex.schema.table
     .dropTableIfExists('tags')
-    .table.dropTableIfExists('user_tag')
-    .table.dropTableIfExists('unseen_tags');
+    .table.dropTableIfExists('user_tag');
