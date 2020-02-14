@@ -41,7 +41,7 @@
     "socket.io": "^2.1.1",
     "vision": "^5.3.3",
     "white-out": "^2.0.2",
-    "yarn": "^1.10.1"
+    "yarn": "^1.22.0"
   },
   "devDependencies": {
     "faker": "^4.1.0",
