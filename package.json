@@ -38,7 +38,7 @@
     "pg": "^7.4.3",
     "prompt": "^1.0.0",
     "simple-fixtures": "^1.0.1",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.4.0",
     "vision": "^5.3.3",
     "white-out": "^2.0.2",
     "yarn": "^1.10.1"
