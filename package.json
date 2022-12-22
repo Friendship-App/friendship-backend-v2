@@ -30,7 +30,7 @@
     "hapi-swagger": "^9.1.1",
     "inert": "^5.1.0",
     "joi": "^13.4.0",
-    "jsonwebtoken": "^8.3.0",
+    "jsonwebtoken": "^9.0.0",
     "knex": "^0.15.0",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
